@@ -51,6 +51,7 @@ public traversePromise(root:TreeNode, callback: ((n: TreeNode) => Promise<void>)
 
 server.post('/parse/', function (req: express.Request, res: express.Response) {
   let html = req.body;
+  console.log(html)
 
   puppeteer
     .launch()

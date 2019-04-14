@@ -1,7 +1,10 @@
 <template>
-  <div id="app">
-
-    {{htmlString}}
+  <div
+    id="app"
+    v-html="innerHTML"
+  >
+    {{innerHTML}}
+    {{color}}
 
   </div>
 </template>
@@ -14,18 +17,42 @@ import axios, { AxiosResponse } from "axios";
 @Component({})
 export default class AppVue extends Vue {
   private htmlString: string = "";
+  private innerHTML: string = "";
   private colors: string[] = [];
+  private color: string = "";
 
   mounted() {
     let url =
       "https%3A%2F%2Fstackoverflow.com%2Fquestions%2F10585029%2Fparse-an-html-string-with-js";
-    axios.get(`http://localhost:3000/${url}`)
-    .then((response: AxiosResponse) => {
-      this.htmlString = response.data;
-    })
-    .catch(err =>{
-      this.htmlString = err;
-    });
+    let dom = document.createElement("html");
+
+    axios
+      .get(`http://localhost:3000/get/${url}`)
+      .then(res => res.data)
+      .then(html=>{
+        return axios.post("http://localhost:3000/parse",html,{
+          headers : {
+            "Content-Type":"text/html"
+          }
+        
+        } )
+      })
+      .then(res=>{
+        console.log(res.data)
+      })
+      // .then((response: AxiosResponse) => {
+      //   this.innerHTML = response.data;
+      //   dom.innerHTML = response.data;
+      //   let oDocument = dom.ownerDocument;
+      //   let el = dom.querySelector("#announcement-banner");
+
+      //   console.log("style", window.getComputedStyle(dom.querySelector("#announcement-banner")).getPropertyValue("background-color"))
+        
+      //   // this.color = (this.dom.querySelector("#annoucement-banner") as HTMLElement).style.backgroundColor;
+      // })
+      .catch(err => {
+        this.innerHTML = err;
+      });
 
     // let html: HTMLElement = document.createElement("html");
 
