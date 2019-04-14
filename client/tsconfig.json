@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
+    "allowJs": true,
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
@@ -20,6 +21,11 @@
         "src/*"
       ]
     },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./typings"
+    ]
+    ,
     "lib": [
       "esnext",
       "dom",
