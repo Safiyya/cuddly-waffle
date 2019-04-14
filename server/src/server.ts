@@ -51,7 +51,6 @@ public traversePromise(root:TreeNode, callback: ((n: TreeNode) => Promise<void>)
 
 server.post('/parse/', function (req: express.Request, res: express.Response) {
   let html = req.body;
-  console.log(html)
 
   puppeteer
     .launch()
@@ -62,19 +61,40 @@ server.post('/parse/', function (req: express.Request, res: express.Response) {
       return page.setContent(html).then(() => { return page });
     })
     .then(function (page) {
-     
-      return page.$$eval("div", elements => {
 
-        const getElement = (el: HTMLElement): { tag: string, class: string, color: string, backgroundColor: string } => {
+      return page.$$eval("*", elements => {
+
+        const getElement = (el: HTMLElement): { tag: string, class: string, color: string }[] => {
           let tag = el.tagName;
           let color = getComputedStyle(el).color;
           let backgroundColor = getComputedStyle(el).backgroundColor;
+          let background = getComputedStyle(el).background;
+          let borderTopColor = getComputedStyle(el).borderTopColor;
+          let borderBottomColor = getComputedStyle(el).borderBottomColor;
+          let borderLeftColor = getComputedStyle(el).borderLeftColor;
+          let borderRightColor = getComputedStyle(el).borderRightColor;
+          let stroke = getComputedStyle(el).stroke;
+          let fill = getComputedStyle(el).fill;
           let classes = Array.from(el.classList.values()).join(' ');
 
-          return { tag: tag, class: classes, color: color, backgroundColor: backgroundColor };
+          return [{ tag: tag, class: classes, color: color },
+          { tag: tag, class: classes, color: backgroundColor },
+          { tag: tag, class: classes, color: background },
+          { tag: tag, class: classes, color: borderTopColor },
+          { tag: tag, class: classes, color: borderBottomColor },
+          { tag: tag, class: classes, color: borderLeftColor },
+          { tag: tag, class: classes, color: borderRightColor },
+          { tag: tag, class: classes, color: stroke },
+          { tag: tag, class: classes, color: fill }]
+            
         }
-        
-        return elements.map(d => getElement(d as HTMLElement))
+
+        let regex= /(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/g;
+
+        return elements
+        .map(d => getElement(d as HTMLElement))
+        .reduce((pre, cur)=> pre.concat(cur), [])
+        .filter(el => regex.test(el.color))
 
       })
     })

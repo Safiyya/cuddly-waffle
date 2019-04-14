@@ -1,10 +1,29 @@
 <template>
-  <div
-    id="app"
-  >
-  <div v-for="(color, cix) in colors" :key="cix" class="w-48 h-48" :style="{backgroundColor:color}" >
-{{color}}
-  </div>
+  <div id="app">
+    <span class="text-red">{{error}}</span>
+    <input
+      v-model="url"
+      type="text"
+      name=""
+      id="input-url"
+    >
+    <button @click="get()">Get</button>
+
+    <div class="flex flex-wrap">
+      <div
+        v-for="(color, cix) in colors"
+        :key="cix"
+       
+      >
+        <div  class=" w-48 h-48"
+        :style="{backgroundColor:color}">
+
+        </div>
+        <div>
+          {{color}}
+        </div>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -16,39 +35,40 @@ import axios, { AxiosResponse } from "axios";
 
 @Component({})
 export default class AppVue extends Vue {
-  private htmlString: string = "";
-  private innerHTML: string = "";
+  private url: string = "";
+  private error: string = "";
   private colors: string[] = [];
-  private color: string = "";
 
-  mounted() {
-    let url =
-      "https%3A%2F%2Fstackoverflow.com%2Fquestions%2F10585029%2Fparse-an-html-string-with-js";
-    let dom = document.createElement("html");
-
+  private get() {
+    this.error = "";
+    this.colors = [];
     axios
-      .get(`http://localhost:3000/get/${url}`)
+      .get(`http://localhost:3000/get/${encodeURIComponent(this.url)}`)
       .then(res => res.data)
-      .then(html=>{
-        return axios.post("http://localhost:3000/parse",html,{
-          headers : {
-            "Content-Type":"text/html"
+      .then(html => {
+        return axios.post("http://localhost:3000/parse", html, {
+          headers: {
+            "Content-Type": "text/html"
           }
-        
-        } )
+        });
       })
-      .then(res=>{
-        return res.data
+      .then(res => {
+        return res.data;
       })
-      .then((data:any[]) =>{
-        return data.reduce((prev, cur, i, a, k = cur.color) => ((prev[k] || (prev[k] = [])).push(cur), prev), {});
+      .then((data: any[]) => {
+        return data.reduce(
+          (prev, cur, i, a, k = cur.color) => (
+            (prev[k] || (prev[k] = [])).push(cur), prev
+          ),
+          {}
+        );
       })
-      .then((result)=>{
-        this.colors = Object.keys(result);
-        console.log(this.colors)
+      .then(result => {
+        this.colors = [...new Set(Object.keys(result))]; ;
+        console.log(result, this.colors);
       })
       .catch(err => {
-        this.innerHTML = err;
+        this.error = err;
       });
 
     // let html: HTMLElement = document.createElement("html");
