@@ -69,7 +69,7 @@ server.post('/parse/', function (req: express.Request, res: express.Response) {
           let tag = el.tagName;
           let color = getComputedStyle(el).color;
           let backgroundColor = getComputedStyle(el).backgroundColor;
-          let classes = Array.from(el.classList.keys()).join(' ');
+          let classes = Array.from(el.classList.values()).join(' ');
 
           return { tag: tag, class: classes, color: color, backgroundColor: backgroundColor };
         }

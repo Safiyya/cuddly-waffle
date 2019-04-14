@@ -1,10 +1,10 @@
 <template>
   <div
     id="app"
-    v-html="innerHTML"
   >
-    {{innerHTML}}
-    {{color}}
+  <div v-for="(color, cix) in colors" :key="cix" class="w-48 h-48" :style="{backgroundColor:color}" >
+{{color}}
+  </div>
 
   </div>
 </template>
@@ -38,18 +38,15 @@ export default class AppVue extends Vue {
         } )
       })
       .then(res=>{
-        console.log(res.data)
+        return res.data
       })
-      // .then((response: AxiosResponse) => {
-      //   this.innerHTML = response.data;
-      //   dom.innerHTML = response.data;
-      //   let oDocument = dom.ownerDocument;
-      //   let el = dom.querySelector("#announcement-banner");
-
-      //   console.log("style", window.getComputedStyle(dom.querySelector("#announcement-banner")).getPropertyValue("background-color"))
-        
-      //   // this.color = (this.dom.querySelector("#annoucement-banner") as HTMLElement).style.backgroundColor;
-      // })
+      .then((data:any[]) =>{
+        return data.reduce((prev, cur, i, a, k = cur.color) => ((prev[k] || (prev[k] = [])).push(cur), prev), {});
+      })
+      .then((result)=>{
+        this.colors = Object.keys(result);
+        console.log(this.colors)
+      })
       .catch(err => {
         this.innerHTML = err;
       });
