@@ -82,7 +82,7 @@ server.get('/evaluate/:url', function (req: express.Request, res: express.Respon
         return elements
           .map(d => getElement(d as HTMLElement))
           .reduce((pre, cur) => pre.concat(cur), [])
-          // .filter(el => regex.test(el.color))
+          .filter(el => el.color !== 'none')
 
       })
     })

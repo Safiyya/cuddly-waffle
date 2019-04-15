@@ -19,6 +19,7 @@
     "typescript": "^3.4.3"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.17.0",
     "@types/cheerio": "^0.22.11",
     "@types/body-parser": "^1.17.0",
     "@types/cors": "^2.8.4",

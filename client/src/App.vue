@@ -13,14 +13,21 @@
       <div
         v-for="(color, cix) in colors"
         :key="cix"
-       
       >
-        <div  class=" w-48 h-48"
-        :style="{backgroundColor:color}">
+        <div
+          class=" w-48 h-48"
+          :style="{backgroundColor:color.rgb.raw}"
+        >
 
         </div>
         <div>
-          {{color}}
+          HSL {{color.hsl.raw}}
+        </div>
+        <div>
+          RGB {{color.rgb.raw}}
+        </div>
+        <div>
+          HEX {{color.hex.raw}}
         </div>
       </div>
     </div>
@@ -30,28 +37,21 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import { htmlParser } from "./services/parse";
-import axios, { AxiosResponse } from "axios";
+import { colorConverter } from "./services/color-converter";
+import axios from "axios";
+import Color from "./models/color";
 
 @Component({})
 export default class AppVue extends Vue {
-  private url: string = "";
+  private url: string = "https://www.fullstory.com/";
   private error: string = "";
-  private colors: string[] = [];
+  private colors: Color[] = [];
 
   private get() {
     this.error = "";
     this.colors = [];
     axios
       .get(`http://localhost:3000/evaluate/${encodeURIComponent(this.url)}`)
-      // .then(res => res.data)
-      // .then(html => {
-      //   return axios.post("http://localhost:3000/parse", html, {
-      //     headers: {
-      //       "Content-Type": "text/html"
-      //     }
-      //   });
-      // })
       .then(res => {
         return res.data;
       })
@@ -64,17 +64,17 @@ export default class AppVue extends Vue {
         );
       })
       .then(result => {
-        this.colors = [...new Set(Object.keys(result))]; ;
-        console.log(result, this.colors);
+        this.colors = [...new Set(Object.keys(result))]
+        .map(c =>
+          colorConverter.convert(c)
+        )
+        .sort((a:Color, b:Color)=>{
+          return a.hsl.values[0] - b.hsl.values[0]
+        });
       })
       .catch(err => {
         this.error = err;
       });
-
-    // let html: HTMLElement = document.createElement("html");
-
-    // this.htmlString = html.outerHTML;
-    // this.colors = htmlParser.parse(html);
   }
 }
 </script>
