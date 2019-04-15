@@ -43,15 +43,15 @@ export default class AppVue extends Vue {
     this.error = "";
     this.colors = [];
     axios
-      .get(`http://localhost:3000/get/${encodeURIComponent(this.url)}`)
-      .then(res => res.data)
-      .then(html => {
-        return axios.post("http://localhost:3000/parse", html, {
-          headers: {
-            "Content-Type": "text/html"
-          }
-        });
-      })
+      .get(`http://localhost:3000/evaluate/${encodeURIComponent(this.url)}`)
+      // .then(res => res.data)
+      // .then(html => {
+      //   return axios.post("http://localhost:3000/parse", html, {
+      //     headers: {
+      //       "Content-Type": "text/html"
+      //     }
+      //   });
+      // })
       .then(res => {
         return res.data;
       })
