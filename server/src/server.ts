@@ -47,7 +47,7 @@ server.get('/evaluate/:url', function (req: express.Request, res: express.Respon
     })
     .then(function (page) {
       
-      return page.$$eval("*:not(meta):not(title):not(head):not(link):not(script):not(noscript):not(style)", elements => {
+      return page.$$eval("*:not(meta):not(html):not(title):not(head):not(link):not(script):not(noscript):not(style)", elements => {
 
         const getElement = (el: HTMLElement): { tag: string, class: string, color: string }[] => {
           let tag = el.tagName;
