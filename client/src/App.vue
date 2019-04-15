@@ -47,6 +47,22 @@ export default class AppVue extends Vue {
   private error: string = "";
   private colors: Color[] = [];
 
+  private uniqBy = (arr, predicate) => {
+    const cb = typeof predicate === "function" ? predicate : o => o[predicate];
+
+    return [
+      ...arr
+        .reduce((map, item) => {
+          const key = cb(item);
+
+          map.has(key) || map.set(key, item);
+
+          return map;
+        }, new Map())
+        .values()
+    ];
+  };
+
   private get() {
     this.error = "";
     this.colors = [];
@@ -64,13 +80,11 @@ export default class AppVue extends Vue {
         );
       })
       .then(result => {
-        this.colors = [...new Set(Object.keys(result))]
-        .map(c =>
-          colorConverter.convert(c)
-        )
-        .sort((a:Color, b:Color)=>{
-          return a.hsl.values[0] - b.hsl.values[0]
-        });
+        this.colors = this.uniqBy([...new Set(Object.keys(result))]
+          .map(c => colorConverter.convert(c)), (c:Color) => c.hex.raw)
+          .sort((a: Color, b: Color) => {
+            return a.hsl.values[0] - b.hsl.values[0];
+          });
       })
       .catch(err => {
         this.error = err;
