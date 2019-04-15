@@ -15,14 +15,14 @@ class ColorConverter {
             color.rgb.values = this.extractValues(raw);
             color.hsl.values = converter.rgb.hsl(color.rgb.values);
             color.hsl.raw = `hsl(${color.hsl.values[0]}, ${color.hsl.values[1]}%, ${color.hsl.values[2]}%)`
-            color.hex.raw = converter.rgb.hex(color.rgb.values)
+            color.hex.raw = `#${converter.rgb.hex(color.rgb.values)}`
         }
         if (raw.match('hsl')) {
             color.hsl.raw = raw;
             color.hsl.values = this.extractValues(raw);
             color.rgb.values = converter.hsl.rgb(color.hsl.values);
             color.rgb.raw = `rgb(${color.rgb.values[0]}, ${color.rgb.values[1]}, ${color.rgb.values[2]})`
-            color.hex.raw = converter.hsl.hex(color.hsl.values);
+            color.hex.raw = `#${converter.hsl.hex(color.hsl.values)}`;
         }
 
         return color;
