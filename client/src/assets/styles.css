@@ -1,0 +1,15 @@
+
+body{
+  font-family : "Titillium Web", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  @apply bg-grey-lightest;
+}
+
+
+button{
+  @apply outline-none;
+}
+
+input{
+  @apply shadow-none border-solid;
+}
