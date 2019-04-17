@@ -4,7 +4,7 @@
     <span class="text-lg font-thin uppercase my-4" >{{label}}</span>
     <div class="flex flex-wrap">
       <swatch
-        v-for="(color, cix) in localColors"
+        v-for="(color, cix) in colors"
         :key="cix"
         class="mr-3 mb-3"
         :color="color"
@@ -26,16 +26,9 @@ import Swatch from "./Swatch.vue";
   }
 })
 export default class SwatchGroup extends Vue {
-  @Prop() colors: Color[] = [];
-  @Prop() label: string = "";
+  @Prop() colors: Color[];
+  @Prop() label: string;
 
-  get localColors() {
-    return [].concat(this.colors);
-  }
-
-   get localLabel() {
-    return this.label;
-  }
 }
 </script>
 

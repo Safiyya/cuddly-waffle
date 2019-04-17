@@ -10,6 +10,7 @@
             id="inline-full-name"
             type="text"
             v-model="url"
+            @keydown="resetPreview()"
           >
         </div>
         <button
@@ -20,18 +21,11 @@
       </form>
 
       <div class="my-12 flex-grow">
-        <div class="relative">
-          <simple-svg :filepath="require('../assets/browser-header.svg')" />
-          <span v-if="colors.length>0" class="text-sm absolute  ml-24 pin-t mt-4 opacity-25">{{url}}</span>
-        </div>
-
-        <div class="bg-white rounded-b h-64 relative overflow-auto">
-          <span
-            class="centered"
-            v-show="isLoading"
-          >Loading...</span>
-         <img class="w-full" :src="screenshot" />
-        </div>
+        <preview
+          :url="url"
+          :screenshot="screenshot"
+          :is-loading="isLoading"
+        ></preview>
       </div>
 
       <div>
@@ -42,46 +36,7 @@
     <div class="w-3/5 max-h-full overflow-y-auto bg-white">
       <div class="w-full bg-grey-lightest flex flex-col">
 
-        <swatch-group
-          class="swatch-group"
-          :label="'Greys'"
-          :colors="filterGrey(colors)"
-        ></swatch-group>
-        <swatch-group
-          class="swatch-group"
-          :label="'Reds'"
-          :colors="filterWithHue(colors, 0, 20)"
-        ></swatch-group>
-        <swatch-group
-          class="swatch-group"
-          :label="'Oranges'"
-          :colors="filterWithHue(colors, 20, 50)"
-        ></swatch-group>
-        <swatch-group
-          class="swatch-group"
-          :label="'Yellows'"
-          :colors="filterWithHue(colors, 50, 70)"
-        ></swatch-group>
-        <swatch-group
-          class="swatch-group"
-          :label="'Greens'"
-          :colors="filterWithHue(colors,70, 170)"
-        ></swatch-group>
-        <swatch-group
-          class="swatch-group"
-          :label="'Blues'"
-          :colors="filterWithHue(colors,170, 260)"
-        ></swatch-group>
-        <swatch-group
-          class="swatch-group"
-          :label="'Purples'"
-          :colors="filterWithHue(colors,260, 310)"
-        ></swatch-group>
-        <swatch-group
-          class="swatch-group"
-          :label="'Pinks'"
-          :colors="filterWithHue(colors,310, 360)"
-        ></swatch-group>
+        <swatch-results :colors="colors"></swatch-results>
 
       </div>
     </div>
@@ -94,20 +49,22 @@ import Color from "../models/color";
 import axios from "axios";
 import { colorConverter } from "../services/color-converter";
 import Navigation from "../components/Navigation.vue";
-import SwatchGroup from "../components/SwatchGroup.vue";
 import Signature from "../components/Signature.vue";
+import Preview from "../components/Preview.vue";
+import SwatchResults from "../components/SwatchResults.vue";
 
 @Component({
   components: {
     navigation: Navigation,
     signature: Signature,
-    "swatch-group": SwatchGroup
+    preview: Preview,
+    "swatch-results": SwatchResults
   }
 })
 export default class ResultsPage extends Vue {
   private url: string = "https://vuejs.org/";
   private isLoading: boolean = false;
-  private screenshot:string="";
+  private screenshot: string = "";
   private error: string = "";
   private colors: Color[] = [];
 
@@ -128,15 +85,9 @@ export default class ResultsPage extends Vue {
     ];
   };
 
-  private filterGrey(colors: Color[]) {
-    return colors.filter(c => c.hsl.values[1] < 20);
-  }
-
-  private filterWithHue(colors: Color[], min: number, max: number) {
-    return colors.filter(
-      c =>
-        c.hsl.values[1] >= 20 && c.hsl.values[0] > min && max >= c.hsl.values[0]
-    );
+  private resetPreview() {
+    this.screenshot = "";
+    this.colors = [];
   }
 
   private get() {
@@ -147,10 +98,10 @@ export default class ResultsPage extends Vue {
     let start: number = Date.now();
 
     Promise.all([
-       axios
-      .get(`http://localhost:3000/parse/${encodeURIComponent(this.url)}`),
-       axios
-      .get(`http://localhost:3000/screenshot/${encodeURIComponent(this.url)}`)
+      axios.get(`http://localhost:3000/parse/${encodeURIComponent(this.url)}`),
+      axios.get(
+        `http://localhost:3000/screenshot/${encodeURIComponent(this.url)}`
+      )
     ])
       .then(([colorsResponse, screenshotResponse]) => {
         console.log("query", Date.now() - start);
@@ -171,9 +122,7 @@ export default class ResultsPage extends Vue {
         this.colors = this.uniqBy(
           [...new Set(Object.keys(result))].map(c => colorConverter.convert(c)),
           (c: Color) => c.hex.raw
-        ).sort((a: Color, b: Color) => {
-          return a.hsl.values[0] - b.hsl.values[0];
-        });
+        )
       })
       .then(() => {
         console.log("end", Date.now() - start);
@@ -189,10 +138,4 @@ export default class ResultsPage extends Vue {
 
 
 <style>
-.swatch-group {
-  @apply my-4 pl-12 rounded-l;
-}
-.swatch-group:first-child {
-  @apply mt-0 rounded-bl rounded-tl-none;
-}
 </style>
