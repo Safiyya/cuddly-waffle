@@ -1,7 +1,7 @@
 
 <template>
-  <div>
-    <h4 class="uppercase" v-if="colors.length>0">{{label}}</h4>
+  <div class="swatch-group flex flex-col bg-white" v-if="colors.length>0">
+    <span class="text-lg font-thin uppercase my-4" >{{label}}</span>
     <div class="flex flex-wrap">
       <swatch
         v-for="(color, cix) in localColors"
@@ -31,6 +31,10 @@ export default class SwatchGroup extends Vue {
 
   get localColors() {
     return [].concat(this.colors);
+  }
+
+   get localLabel() {
+    return this.label;
   }
 }
 </script>

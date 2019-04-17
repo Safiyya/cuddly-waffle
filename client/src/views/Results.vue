@@ -33,40 +33,40 @@
 
       </div>
     </div>
-    <div class="w-3/5 max-h-full overflow-y-auto pl-12 bg-white">
-      <div class="flex flex-wrap w-full">
+    <div class="w-3/5 max-h-full overflow-y-auto bg-white">
+      <div class="w-full bg-grey-lightest flex flex-col">
 
-        <swatch-group
+        <swatch-group class="swatch-group"
           :label="'Greys'"
           :colors="filterGrey(colors)"
         ></swatch-group>
-        <swatch-group
+        <swatch-group  class="swatch-group"
           :label="'Reds'"
-          :colors="filterWithHue(colors, 0, 30)"
+          :colors="filterWithHue(colors, 0, 20)"
         ></swatch-group>
-          <swatch-group
+          <swatch-group class="swatch-group"
           :label="'Oranges'"
-          :colors="filterWithHue(colors, 30, 60)"
+          :colors="filterWithHue(colors, 20, 50)"
         ></swatch-group>
-              <swatch-group
+              <swatch-group class="swatch-group"
           :label="'Yellows'"
-          :colors="filterWithHue(colors, 60, 90)"
+          :colors="filterWithHue(colors, 50, 70)"
         ></swatch-group>
-         <swatch-group
+         <swatch-group class="swatch-group"
           :label="'Greens'"
-          :colors="filterWithHue(colors,90, 180)"
+          :colors="filterWithHue(colors,70, 170)"
         ></swatch-group>
-           <swatch-group
+           <swatch-group class="swatch-group"
           :label="'Blues'"
-          :colors="filterWithHue(colors,180, 270)"
+          :colors="filterWithHue(colors,170, 260)"
         ></swatch-group>
-            <swatch-group
+            <swatch-group class="swatch-group"
           :label="'Purples'"
-          :colors="filterWithHue(colors,270, 330)"
+          :colors="filterWithHue(colors,260, 310)"
         ></swatch-group>
-           <swatch-group
+           <swatch-group class="swatch-group"
           :label="'Pinks'"
-          :colors="filterWithHue(colors,330, 360)"
+          :colors="filterWithHue(colors,310, 360)"
         ></swatch-group>
 
       </div>
@@ -89,7 +89,7 @@ import SwatchGroup from "../components/SwatchGroup.vue";
   }
 })
 export default class ResultsPage extends Vue {
-  private url: string = "https://www.facebook.com";
+  private url: string = "https://vuejs.org/";
   private isLoading: boolean = false;
   private error: string = "";
   private colors: Color[] = [];
@@ -157,4 +157,10 @@ export default class ResultsPage extends Vue {
 
 
 <style>
+.swatch-group{
+  @apply my-2 pl-12 rounded-l;
+}
+.swatch-group:first-child{
+  @apply mt-0 rounded-bl rounded-tl-none;
+}
 </style>
