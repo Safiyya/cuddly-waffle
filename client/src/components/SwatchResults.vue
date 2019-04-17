@@ -8,18 +8,6 @@
       :label="key"
       :colors="getGroup(key)"
     ></swatch-group>
-
-    <!--    
-    <swatch-group
-      class="swatch-group"
-      :label="'Purples'"
-      :colors="filterWithHue(colors,260, 310)"
-    ></swatch-group>
-    <swatch-group
-      class="swatch-group"
-      :label="'Pinks'"
-      :colors="filterWithHue(colors,310, 360)"
-    ></swatch-group> -->
   </div>
 
 </template>
