@@ -32,7 +32,27 @@ server.use(bodyParser.text({ type: 'text/html', limit: 100000000 }))
 //     });
 // });
 
-server.get('/evaluate/:url', function (req: express.Request, res: express.Response) {
+server.get('/screenshot/:url', function (req: express.Request, res: express.Response) {
+  let url = req.params.url;
+  puppeteer
+    .launch()
+    .then(function (browser) {
+      return browser.newPage();
+    })
+    .then(function (page) {
+      return page.goto(url, { waitUntil: 'networkidle0' }).then(function () {
+        return page.screenshot({encoding: "base64", fullPage:true})
+      });
+    })
+    .then(function (base64String) {
+      res.send(base64String);
+    })
+    .catch(function (err) {
+      res.status(500).send(err);
+    });
+});
+
+server.get('/parse/:url', function (req: express.Request, res: express.Response) {
   let url = req.params.url;
   
   puppeteer

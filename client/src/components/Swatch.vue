@@ -10,7 +10,7 @@
       :style="{backgroundColor:color.rgb.raw, borderColor:color.rgb.raw}"
     >
       <div
-        class="copy centered  w-1/3 fill-current"
+        class="copy centered  w-1/4 fill-current"
         :style="{color:color.rgb.raw}"
       >
         <simple-svg
