@@ -112,7 +112,7 @@ export default class Swatch extends Vue {
   private copy() {
     this.isCopied = false;
     const el = document.createElement("textarea");
-    el.value = this.getCopiedText();
+    el.value = this.getCopiedText()
     el.setAttribute("readonly", ""); // Make it readonly to be tamper-proof
     el.style.position = "absolute";
     el.style.left = "-9999px"; // Move outside the screen to make it invisible
