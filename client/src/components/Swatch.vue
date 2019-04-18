@@ -23,11 +23,20 @@
         <span v-show="isCopied">Copied!</span>
       </div>
     </div>
-   <div class="w-32">
-      <div class="px-1 flex flex-col items-start">
-        <span v-show="isHEXDisplayed()" class="my-1 uppercase text-sm">{{color.hex.raw}}</span>
-        <span v-show="isHSLDisplayed()" class="my-1 uppercase text-sm">{{color.hsl.raw}}</span>
-        <span v-show="isRGBDisplayed()" class="my-1 uppercase text-sm">{{color.rgb.raw}}</span>
+    <div class="w-32">
+      <div class="px-1 flex flex-col items-start color-codes">
+        <span
+          v-show="isHEXDisplayed()"
+          class="hex my-1 uppercase text-sm"
+        >{{color.hex.raw}}</span>
+        <span
+          v-show="isHSLDisplayed()"
+          class="hsl my-1 uppercase text-sm"
+        >{{color.hsl.raw}}</span>
+        <span
+          v-show="isRGBDisplayed()"
+          class="rgb my-1 uppercase text-sm"
+        >{{color.rgb.raw}}</span>
       </div>
 
     </div>
@@ -61,17 +70,29 @@ export default class Swatch extends Vue {
     return hsp;
   }
 
-  private isHEXDisplayed(){
-    return this.displayOptions.find(o => o.toString().toLowerCase() === ColorDisplayOption.HEX.toString().toLowerCase());
+  private isHEXDisplayed() {
+    return this.displayOptions.find(
+      o =>
+        o.toString().toLowerCase() ===
+        ColorDisplayOption.HEX.toString().toLowerCase()
+    );
   }
 
-  private isHSLDisplayed(){
-    return this.displayOptions.find(o => o.toString().toLowerCase() === ColorDisplayOption.HSL.toString().toLowerCase());
+  private isHSLDisplayed() {
+    return this.displayOptions.find(
+      o =>
+        o.toString().toLowerCase() ===
+        ColorDisplayOption.HSL.toString().toLowerCase()
+    );
   }
 
-  private isRGBDisplayed(){
-   return this.displayOptions.find(o => o.toString().toLowerCase() === ColorDisplayOption.RGB.toString().toLowerCase());
-   }
+  private isRGBDisplayed() {
+    return this.displayOptions.find(
+      o =>
+        o.toString().toLowerCase() ===
+        ColorDisplayOption.RGB.toString().toLowerCase()
+    );
+  }
 
   private isLight(): boolean {
     return this.getHSP() > 240;
@@ -81,10 +102,17 @@ export default class Swatch extends Vue {
     return this.getHSP() < 5;
   }
 
+  private getCopiedText() {
+    let hex = this.isHEXDisplayed() ? this.color.hex.raw : null;
+    let hsl = this.isHSLDisplayed() ? this.color.hsl.raw : null;
+    let rgb = this.isRGBDisplayed() ? this.color.rgb.raw : null;
+    return [hex, hsl, rgb].filter(i => i).join("\r\n");
+  }
+
   private copy() {
     this.isCopied = false;
-    const el = document.createElement("textarea"); // Create a <textarea> element
-    el.value = this.color.hex.raw; // Set its value to the string that you want copied
+    const el = document.createElement("textarea");
+    el.value = this.getCopiedText();
     el.setAttribute("readonly", ""); // Make it readonly to be tamper-proof
     el.style.position = "absolute";
     el.style.left = "-9999px"; // Move outside the screen to make it invisible
