@@ -2,7 +2,8 @@
 <template>
   <div
     class="flex flex-col items-center cursor-pointer"
-    @click="copy()" @mouseleave="isCopied=false"
+    @click="copy()"
+    @mouseleave="isCopied=false"
   >
     <div
       class="swatch-square relative rounded  w-32 h-20 border-2 border-solid "
@@ -22,17 +23,26 @@
         <span v-show="isCopied">Copied!</span>
       </div>
     </div>
-    <span class="my-2 lowercase">{{color.hex.raw}}</span>
+   <div class="w-32">
+      <div class="px-1 flex flex-col items-start">
+        <span v-show="isHEXDisplayed()" class="my-1 uppercase text-sm">{{color.hex.raw}}</span>
+        <span v-show="isHSLDisplayed()" class="my-1 uppercase text-sm">{{color.hsl.raw}}</span>
+        <span v-show="isRGBDisplayed()" class="my-1 uppercase text-sm">{{color.rgb.raw}}</span>
+      </div>
+
+    </div>
+
   </div>
 
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import Color from "../models/color";
+import { Color, ColorDisplayOption } from "../models/color";
 
 @Component({})
 export default class Swatch extends Vue {
   @Prop(Color) color: Color;
+  @Prop() displayOptions: ColorDisplayOption[];
 
   private isCopied: boolean = false;
 
@@ -51,6 +61,18 @@ export default class Swatch extends Vue {
     return hsp;
   }
 
+  private isHEXDisplayed(){
+    return this.displayOptions.find(o => o.toString().toLowerCase() === ColorDisplayOption.HEX.toString().toLowerCase());
+  }
+
+  private isHSLDisplayed(){
+    return this.displayOptions.find(o => o.toString().toLowerCase() === ColorDisplayOption.HSL.toString().toLowerCase());
+  }
+
+  private isRGBDisplayed(){
+   return this.displayOptions.find(o => o.toString().toLowerCase() === ColorDisplayOption.RGB.toString().toLowerCase());
+   }
+
   private isLight(): boolean {
     return this.getHSP() > 240;
   }
@@ -60,7 +82,7 @@ export default class Swatch extends Vue {
   }
 
   private copy() {
-      this.isCopied = false;
+    this.isCopied = false;
     const el = document.createElement("textarea"); // Create a <textarea> element
     el.value = this.color.hex.raw; // Set its value to the string that you want copied
     el.setAttribute("readonly", ""); // Make it readonly to be tamper-proof
@@ -79,7 +101,7 @@ export default class Swatch extends Vue {
       document.getSelection().removeAllRanges(); // Unselect everything on the HTML document
       document.getSelection().addRange(selected); // Restore the original selection
     }
-      this.isCopied = true;
+    this.isCopied = true;
   }
 }
 </script>

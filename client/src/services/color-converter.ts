@@ -1,5 +1,5 @@
 import converter from "color-convert";
-import Color from '../models/color';
+import {Color} from '../models/color';
 
 
 

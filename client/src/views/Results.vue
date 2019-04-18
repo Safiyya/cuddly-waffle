@@ -3,7 +3,7 @@
 
     <div class="w-2/5 h-full ml-20 mr-12 flex flex-col">
       <navigation></navigation>
-      <form class="flex w-full mt-32">
+      <form class="flex w-full mt-24">
         <div class="flex w-full ">
           <input
             class="bg-grey-lighter appearance-none border-2 border-grey-lighter rounded w-full py-2 px-4 text-grey-darker leading-tight focus:outline-none focus:bg-white focus:border-blue-dark"
@@ -19,6 +19,14 @@
         >Get colors</button>
 
       </form>
+      <div class="flex items-center p-3 pl-0">
+        <span class="text-sm text-grey uppercase">Display Options</span>
+        <color-options-switches
+        class="text-sm"
+          v-model="checkedColorDisplays"
+          @selectColorOptions="onSelectColorOptions($event)"
+        ></color-options-switches>
+      </div>
 
       <div class="my-12 flex-grow">
         <preview
@@ -34,9 +42,13 @@
       <signature class="self-end"></signature>
     </div>
     <div class="w-3/5 max-h-full overflow-y-auto bg-white">
+
       <div class="w-full bg-grey-lightest flex flex-col">
 
-        <swatch-results :colors="colors"></swatch-results>
+        <swatch-results
+          :colors="colors"
+          :display-options="checkedColorDisplays"
+        ></swatch-results>
 
       </div>
     </div>
@@ -45,20 +57,22 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import Color from "../models/color";
+import { ColorDisplayOption, Color } from "../models/color";
 import axios from "axios";
 import { colorConverter } from "../services/color-converter";
 import Navigation from "../components/Navigation.vue";
 import Signature from "../components/Signature.vue";
 import Preview from "../components/Preview.vue";
 import SwatchResults from "../components/SwatchResults.vue";
+import ColorOptionsSwitches from "../components/ColorOptionsSwitches.vue";
 
 @Component({
   components: {
     navigation: Navigation,
     signature: Signature,
     preview: Preview,
-    "swatch-results": SwatchResults
+    "swatch-results": SwatchResults,
+    "color-options-switches": ColorOptionsSwitches
   }
 })
 export default class ResultsPage extends Vue {
@@ -67,6 +81,7 @@ export default class ResultsPage extends Vue {
   private screenshot: string = "";
   private error: string = "";
   private colors: Color[] = [];
+  private checkedColorDisplays: ColorDisplayOption[] = [ColorDisplayOption.HEX];
 
   private uniqBy = (arr: any[], predicate: any) => {
     const cb =
@@ -88,6 +103,14 @@ export default class ResultsPage extends Vue {
   private resetPreview() {
     this.screenshot = "";
     this.colors = [];
+  }
+
+  private onSelectColorOptions(options: ColorDisplayOption[]) {
+    this.checkedColorDisplays = [];
+    options.forEach((o, i) => {
+      this.$set(this.checkedColorDisplays, i, options[i]);
+    });
+    console.log("onSelectColorOptions", options, this.checkedColorDisplays);
   }
 
   private get() {
@@ -122,7 +145,7 @@ export default class ResultsPage extends Vue {
         this.colors = this.uniqBy(
           [...new Set(Object.keys(result))].map(c => colorConverter.convert(c)),
           (c: Color) => c.hex.raw
-        )
+        );
       })
       .then(() => {
         console.log("end", Date.now() - start);

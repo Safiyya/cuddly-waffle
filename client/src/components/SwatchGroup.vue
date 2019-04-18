@@ -1,13 +1,17 @@
 
 <template>
-  <div class="swatch-group flex flex-col bg-white" v-if="colors.length>0">
-    <span class="text-lg font-thin uppercase my-4" >{{label}}</span>
+  <div
+    class="swatch-group flex flex-col bg-white"
+    v-if="colors.length>0"
+  >
+    <span class="text-lg font-thin my-4">{{label}}</span>
     <div class="flex flex-wrap">
       <swatch
         v-for="(color, cix) in colors"
         :key="cix"
         class="mr-3 mb-3"
         :color="color"
+        :display-options="displayOptions"
       ></swatch>
 
     </div>
@@ -17,7 +21,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import Color from "../models/color";
+import {Color, ColorDisplayOption} from "../models/color";
 import Swatch from "./Swatch.vue";
 
 @Component({
@@ -27,8 +31,8 @@ import Swatch from "./Swatch.vue";
 })
 export default class SwatchGroup extends Vue {
   @Prop() colors: Color[];
+  @Prop() displayOptions:ColorDisplayOption[];
   @Prop() label: string;
-
 }
 </script>
 

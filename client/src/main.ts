@@ -5,7 +5,7 @@ import router from './router';
 import "normalize.css/normalize.css"
 import "@/assets/tailwind.css";
 import "@/assets/styles.css"
-import VueSimpleSVG from 'vue-simple-svg'
+import VueSimpleSVG from "vue-simple-svg";
 
 
 Vue.use(VueSimpleSVG)

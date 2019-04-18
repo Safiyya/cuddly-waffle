@@ -1,19 +1,21 @@
 
 <template>
   <div>
+    
     <swatch-group
       v-for="(value, key) in colorGroups"
       :key="key"
       class="swatch-group"
       :label="key"
       :colors="getGroup(key)"
+      :display-options="displayOptions"
     ></swatch-group>
   </div>
 
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import Color from "../models/color";
+import {Color, ColorDisplayOption} from "../models/color";
 import SwatchGroup from "./SwatchGroup.vue";
 
 @Component({
@@ -23,6 +25,7 @@ import SwatchGroup from "./SwatchGroup.vue";
 })
 export default class SwatchResults extends Vue {
   @Prop() colors: Color[];
+  @Prop() displayOptions:ColorDisplayOption[];
 
   public get colorGroups() {
     return this.colors
@@ -38,7 +41,6 @@ export default class SwatchResults extends Vue {
   }
 
   getGroup(key: string): Color[] {
-    console.log(this.colorGroups[key].map(i => i.color));
     return this.colorGroups[key].map(i => i.color);
   }
 

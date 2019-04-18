@@ -12,7 +12,13 @@ export class HEX{
     raw: string;
 }
 
-export default class Color {
+export enum ColorDisplayOption{
+    HEX = "HEX", 
+    HSL = "HSL",
+    RGB = "RGB"
+}
+
+export class Color {
     public rgb: RGB;
     public hsl: HSL;
     public hex:HEX;
