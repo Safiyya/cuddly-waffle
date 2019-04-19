@@ -27,6 +27,9 @@ class ColorConverter {
 
         return color;
     }
+
+    
+  
 }
 
 export const colorConverter = new ColorConverter();

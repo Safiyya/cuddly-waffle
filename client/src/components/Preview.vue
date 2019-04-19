@@ -1,8 +1,8 @@
 
 <template>
-  <div>
+  <div class="flex flex-col shadow">
     <div class="relative">
-      <simple-svg :filepath="require('../assets/browser-header.svg')" />
+      <simple-svg class="h-12 grayscale" :filepath="require('../assets/browser-header.svg')" />
       <span
         class="text-sm absolute  ml-24 pin-t mt-4 opacity-25"
       >{{url}}</span>

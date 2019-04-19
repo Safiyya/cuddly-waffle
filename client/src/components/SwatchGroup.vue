@@ -3,13 +3,18 @@
   <div
     class="swatch-group flex flex-col bg-white"
     v-if="colors.length>0"
+    @mouseover="toggleDetails()" 
+    @mouseout="toggleDetails()"
   >
-    <span class="text-lg font-thin my-4">{{label}}</span>
+    <div class="flex items-baseline">
+      <h2 class="">{{label}}</h2>
+      <span :class="{'show':isShowDetails}" class="description mx-2 text-grey text-sm">{{description}}</span>
+    </div>
     <div class="flex flex-wrap">
       <swatch
         v-for="(color, cix) in colors"
         :key="cix"
-        class="mr-3 mb-3"
+        class="mr-4 mb-3"
         :color="color"
         :display-options="displayOptions"
       ></swatch>
@@ -21,7 +26,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import {Color, ColorDisplayOption} from "../models/color";
+import { Color, ColorDisplayOption } from "../models/color";
 import Swatch from "./Swatch.vue";
 
 @Component({
@@ -31,13 +36,32 @@ import Swatch from "./Swatch.vue";
 })
 export default class SwatchGroup extends Vue {
   @Prop() colors: Color[];
-  @Prop() displayOptions:ColorDisplayOption[];
+  @Prop() description: string;
+  @Prop() displayOptions: ColorDisplayOption[];
   @Prop() label: string;
+
+  private isShowDetails:boolean=false;
+
+  private toggleDetails(){
+    this.isShowDetails = !this.isShowDetails;
+  }
+
+
 }
 </script>
 
 <style>
 .is-light-swatch {
   border-color: #e8ecef;
+}
+
+.description{
+  opacity:0;
+  transition: all 400ms;
+}
+
+.description.show{
+  opacity:1;
+  transition: all 400ms;
 }
 </style>

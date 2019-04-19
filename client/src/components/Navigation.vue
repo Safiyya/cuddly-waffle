@@ -2,15 +2,15 @@
 <template>
   <header>
     <nav class="my-3">
-      <div class="flex items-center">
+      <h1 class="text-grey-darker flex items-end justify-center">
         <img
-          class="w-12 h-12"
+          class="w-6 h-6"
           src="@/assets/logo.svg"
           alt="Logo"
           srcset=""
         >
-        <span class="mx-3 uppercase text-2xl">CuddlyWaffle</span>
-      </div>
+        <span class="mx-1 font-bold uppercase text-xl">CuddlyWaffle</span>
+      </h1>
     </nav>
   </header>
 

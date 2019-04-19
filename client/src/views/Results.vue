@@ -1,12 +1,12 @@
 <template>
   <div class="w-full  h-screen flex justify-between">
 
-    <div class="w-2/5 h-full ml-20 mr-12 flex flex-col">
+    <div class="w-2/5 h-full ml-12 mr-12 flex flex-col">
       <navigation></navigation>
-      <form class="flex w-full mt-24">
+      <form class="flex w-full mt-16">
         <div class="flex w-full ">
           <input
-            class="bg-grey-lighter appearance-none border-2 border-grey-lighter rounded w-full py-2 px-4 text-grey-darker leading-tight focus:outline-none focus:bg-white focus:border-blue-dark"
+            class="bg-grey-light appearance-none border-2 border-grey-light rounded-l-full w-full py-2 px-4 text-grey-darker leading-tight focus:outline-none focus:bg-white focus:border-blue-dark"
             id="inline-full-name"
             type="text"
             v-model="url"
@@ -15,7 +15,7 @@
         </div>
         <button
           @click="get()"
-          class=" mx-2 cursor-pointer whitespace-no-wrap bg-blue-dark text-white rounded-full uppercase p-3 border-0"
+          class="cursor-pointer whitespace-no-wrap bg-blue-dark text-white text-sm rounded-r-full uppercase p-3 border-0"
         >Get colors</button>
 
       </form>

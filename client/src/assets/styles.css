@@ -1,10 +1,9 @@
 
 body{
-  font-family : "Titillium Web", Helvetica, Arial, sans-serif;
+  font-family : "Roboto", Helvetica, Arial, sans-serif;
   font-weight: 400;
-  @apply bg-grey-lightest;
+  @apply  bg-grey-lightest;
 }
-
 
 button{
   @apply outline-none;
@@ -22,5 +21,15 @@ input{
   @apply absolute;
 }
 
+h1.uppercase{
+  letter-spacing: 1.7px;
+  @apply text-grey-darkest;
+}
 
-    
+h2{
+  @apply text-lg font-medium text-black my-5
+}
+
+.grayscale{
+  filter:grayscale(1);
+}

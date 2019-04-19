@@ -6,7 +6,7 @@
     @mouseleave="isCopied=false"
   >
     <div
-      class="swatch-square relative rounded  w-32 h-20 border-2 border-solid "
+      class="swatch-square relative rounded-lg  w-32 h-20 border border-solid "
       :class="{'is-light-swatch':isLight(), 'is-dark-swatch':isDark()}"
       :style="{backgroundColor:color.rgb.raw, borderColor:color.rgb.raw}"
     >
@@ -24,18 +24,18 @@
       </div>
     </div>
     <div class="w-32">
-      <div class="px-1 flex flex-col items-start color-codes">
+      <div class="px-1 my-1 font-bold text-sm text-grey-darkest flex flex-col items-center color-codes">
         <span
           v-show="isHEXDisplayed()"
-          class="hex my-1 uppercase text-sm"
+          class="hex my-1 lowercase  "
         >{{color.hex.raw}}</span>
         <span
           v-show="isHSLDisplayed()"
-          class="hsl my-1 uppercase text-sm"
+          class="hsl my-1  lowercase "
         >{{color.hsl.raw}}</span>
         <span
           v-show="isRGBDisplayed()"
-          class="rgb my-1 uppercase text-sm"
+          class="rgb my-1  lowercase "
         >{{color.rgb.raw}}</span>
       </div>
 
@@ -55,20 +55,7 @@ export default class Swatch extends Vue {
 
   private isCopied: boolean = false;
 
-  /**
-   * HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-   */
-  private getHSP(): number {
-    let r: number, g: number, b: number, hsp: number;
-
-    r = this.color.rgb.values[0];
-    g = this.color.rgb.values[1];
-    b = this.color.rgb.values[2];
-
-    hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
-
-    return hsp;
-  }
+  
 
   private isHEXDisplayed() {
     return this.displayOptions.find(
@@ -95,11 +82,11 @@ export default class Swatch extends Vue {
   }
 
   private isLight(): boolean {
-    return this.getHSP() > 240;
+    return this.color.getPerceivedBrightness() > 250;
   }
 
   private isDark(): boolean {
-    return this.getHSP() < 5;
+    return this.color.getPerceivedBrightness() < 5;
   }
 
   private getCopiedText() {
@@ -136,21 +123,22 @@ export default class Swatch extends Vue {
 
 <style>
 .is-light-swatch {
-  border-color: #e8ecef !important;
+  border-color: hsl(0 , 0%, 0%, 0.1) !important;
 }
 
-.is-light-swatch > .copy {
-  @apply text-grey-dark fill-current !important;
-}
+/* .is-light-swatch:hover > .copy {
+  @apply text-grey-darkest fill-current !important;
+} */
 
 .swatch-square > .copy {
   opacity: 0;
+   @apply text-grey-dark fill-current !important;
   transition: all 400ms;
 }
 
 .swatch-square:hover {
   transition: all 400ms;
-  @apply bg-white border-2 !important;
+  /* @apply bg-white border !important; */
 }
 
 .swatch-square:hover > .copy {

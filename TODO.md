@@ -6,9 +6,11 @@
 - [ ] some requests timeout after 30s i.e. https://www.theguardian.com/international
 - [ ] error management
 - [ ] server memory leak
+- [ ] http vs https vs nothing
+- [ ] focus page on input
 
 <div>Icon made from <a href="http://www.onlinewebfonts.com/icon">Icon Fonts</a> is licensed by CC BY 3.0</div>
-
+Credit to http://alienryderflex.com/hsp.html
 
 Audience : 
 - Developers

@@ -1,12 +1,13 @@
 
 <template>
   <div>
-    
+
     <swatch-group
       v-for="(value, key) in colorGroups"
       :key="key"
       class="swatch-group"
       :label="key"
+      :description="getGroupDescription(key)"
       :colors="getGroup(key)"
       :display-options="displayOptions"
     ></swatch-group>
@@ -15,7 +16,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import {Color, ColorDisplayOption} from "../models/color";
+import { Color, ColorDisplayOption } from "../models/color";
 import SwatchGroup from "./SwatchGroup.vue";
 
 @Component({
@@ -25,42 +26,83 @@ import SwatchGroup from "./SwatchGroup.vue";
 })
 export default class SwatchResults extends Vue {
   @Prop() colors: Color[];
-  @Prop() displayOptions:ColorDisplayOption[];
+  @Prop() displayOptions: ColorDisplayOption[];
 
   public get colorGroups() {
     return this.colors
       .map(c => {
-       return this.matchColor(c);
+        return this.matchColor(c);
       })
-      .sort((a, b)=> a.order-b.order)
+      .sort((a, b) => a.order - b.order)
       .reduce(
         (r, v, i, a, k = v.label) => ((r[k] || (r[k] = [])).push(v), r),
         {}
-      )
-      
+      );
   }
 
-  getGroup(key: string): Color[] {
-    return this.colorGroups[key].map(i => i.color);
+  getGroup(key: any): Color[] {
+    console.log(this.colorGroups);
+    return this.colorGroups[key]
+      .map(i => i.color)
+      .sort((a: Color, b: Color) => b.getPerceivedBrightness() - a.getPerceivedBrightness());
+  }
+
+  getGroupDescription(key: any): string {
+    return this.colorGroups[key].map(i => i.description)[0];
   }
 
   matchColor(c: Color) {
     if (this.isGrey(c)) {
-      return { label: "Grey", color: c, order:1 };
+      return {
+        label: "Grey",
+        description: "Low saturation",
+        color: c,
+        order: 1
+      };
     } else if (this.isRed(c)) {
-      return { label: "Red", color: c , order:2};
-    }else if (this.isOrange(c)) {
-      return { label: "Orange", color: c , order:3};
-    }else if (this.isYellow(c)) {
-      return { label: "Yellow", color: c , order:4};
-    }else if (this.isGreen(c)) {
-      return { label: "Green", color: c, order:5 };
-    }else if (this.isBlue(c)) {
-      return { label: "Blue", color: c, order:6 };
-    }else if (this.isPurple(c)) {
-      return { label: "Purple", color: c, order:7 };
-    }else if (this.isPink(c)) {
-      return { label: "Pink", color: c, order:8 };
+      return { label: "Red", description: "Hue below 20", color: c, order: 2 };
+    } else if (this.isOrange(c)) {
+      return {
+        label: "Orange",
+        description: "Hue between 20 and 50",
+        color: c,
+        order: 3
+      };
+    } else if (this.isYellow(c)) {
+      return {
+        label: "Yellow",
+        description: "Hue between 50 and 70",
+        color: c,
+        order: 4
+      };
+    } else if (this.isGreen(c)) {
+      return {
+        label: "Green",
+        description: "Hue between 70 and 170",
+        color: c,
+        order: 5
+      };
+    } else if (this.isBlue(c)) {
+      return {
+        label: "Blue",
+        description: "Hue between 170 and 260",
+        color: c,
+        order: 6
+      };
+    } else if (this.isPurple(c)) {
+      return {
+        label: "Purple",
+        description: "Hue between 260 and 310",
+        color: c,
+        order: 7
+      };
+    } else if (this.isPink(c)) {
+      return {
+        label: "Pink",
+        description: "Hue abobe 310",
+        color: c,
+        order: 8
+      };
     }
   }
 

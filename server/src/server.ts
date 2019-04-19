@@ -2,6 +2,8 @@
 import express from "express";
 import puppeteer from "puppeteer";
 import bodyParser from "body-parser";
+import path from "path";
+import fs from "fs";
 const server: express.Application = express();
 
 server.use(function (req, res, next) {
@@ -11,28 +13,14 @@ server.use(function (req, res, next) {
 });
 server.use(bodyParser.text({ type: 'text/html', limit: 100000000 }))
 
-
-// server.get('/get/:url', function (req: express.Request, res: express.Response) {
-//   let url = req.params.url;
-//   puppeteer
-//     .launch()
-//     .then(function (browser) {
-//       return browser.newPage();
-//     })
-//     .then(function (page) {
-//       return page.goto(url, { waitUntil: 'networkidle0' }).then(function () {
-//         return page.content();
-//       });
-//     })
-//     .then(function (html) {
-//       res.send(html);
-//     })
-//     .catch(function (err) {
-//       res.status(500).send(err);
-//     });
-// });
-
 server.get('/screenshot/:url', function (req: express.Request, res: express.Response) {
+  
+  let image = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "page.png"));
+  
+  return res.send(new Buffer(image).toString('base64'))
+  /*
+  
+  
   let url = req.params.url;
   puppeteer
     .launch()
@@ -50,9 +38,14 @@ server.get('/screenshot/:url', function (req: express.Request, res: express.Resp
     .catch(function (err) {
       res.status(500).send(err);
     });
+    */
 });
 
 server.get('/parse/:url', function (req: express.Request, res: express.Response) {
+  
+  let results = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "colors.json"), "utf-8");
+  res.send(JSON.parse(results).colors);
+  /*
   let url = req.params.url;
   
   puppeteer
@@ -114,6 +107,7 @@ server.get('/parse/:url', function (req: express.Request, res: express.Response)
       console.error(err)
       res.status(500).send(err);
     });
+    */
 });
 
 
