@@ -2,7 +2,7 @@
 <template>
   <footer class="w-full pin-b text-sm">
     <nav class="my-3 flex justify-center w-full text-xs text-grey">
-        Made with love by <a class="mx-1 text-grey no-underline hover:text-blue-dark" target="blank" href="http://safiyya.io">Safiyya Babio</a>
+        Made with ❤️ by <a class="mx-1 text-grey no-underline hover:text-blue-dark" target="blank" href="http://safiyya.io">Safiyya Babio</a>
 
     </nav>
   </footer>
