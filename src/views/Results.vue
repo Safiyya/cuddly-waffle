@@ -139,12 +139,10 @@ export default class ResultsPage extends Vue {
       )
     ])
       .then(([colorsResponse, screenshotResponse]) => {
-        console.log("query", colorsResponse, screenshotResponse, Date.now() - start);
         this.screenshot = `data:image/png;base64, ${screenshotResponse.data}`;
         return colorsResponse.data;
       })
       .then((data: any[]) => {
-        console.log("reduce", Date.now() - start);
         return data.reduce(
           (prev, cur, i, a, k = cur.color) => (
             (prev[k] || (prev[k] = [])).push(cur), prev
@@ -153,18 +151,15 @@ export default class ResultsPage extends Vue {
         );
       })
       .then(result => {
-        console.log("sort", Date.now() - start);
         this.colors = this.uniqBy(
           [...new Set(Object.keys(result))].map(c => colorConverter.convert(c)),
           (c: Color) => c.hex.raw
         );
       })
       .then(() => {
-        console.log("end", Date.now() - start);
         this.isLoading = false;
       })
       .catch(err => {
-        console.log(err)
         this.isLoading = false;
         this.error = `Cannot reach ${this.url}!`;
       });
