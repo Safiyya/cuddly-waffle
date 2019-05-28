@@ -3,7 +3,8 @@
 
     <div class="w-2/5 h-full ml-12 mr-12 flex flex-col">
       <navigation></navigation>
-      <form class="flex w-full mt-16">
+
+    <form class="flex w-full mt-16">
         <div class="flex w-full ">
           <input
             class="bg-grey-light appearance-none border-2 border-grey-light rounded-l-full w-full py-2 px-4 text-grey-darker leading-tight focus:outline-none focus:bg-white focus:border-blue-dark"
@@ -19,10 +20,11 @@
         >Get colors</button>
 
       </form>
+      <span class="text-sm text-red">{{error}}</span>
       <div class="flex items-center p-3 pl-0">
         <span class="text-sm text-grey uppercase">Display Options</span>
         <color-options-switches
-        class="text-sm"
+          class="text-sm"
           v-model="checkedColorDisplays"
           @selectColorOptions="onSelectColorOptions($event)"
         ></color-options-switches>
@@ -113,12 +115,22 @@ export default class ResultsPage extends Vue {
     console.log("onSelectColorOptions", options, this.checkedColorDisplays);
   }
 
+  private proofUrl(url: string) {
+    if (/https?:\/\//.test(url)) {
+      return url;
+    } else {
+      return `https://${url}`;
+    }
+  }
+
   private get() {
     this.error = "";
     this.isLoading = true;
     this.colors = [];
     this.screenshot = "";
     let start: number = Date.now();
+
+    this.url = this.proofUrl(this.url);
 
     Promise.all([
       axios.get(`http://localhost:3000/parse/${encodeURIComponent(this.url)}`),
@@ -127,7 +139,7 @@ export default class ResultsPage extends Vue {
       )
     ])
       .then(([colorsResponse, screenshotResponse]) => {
-        console.log("query", Date.now() - start);
+        console.log("query", colorsResponse, screenshotResponse, Date.now() - start);
         this.screenshot = `data:image/png;base64, ${screenshotResponse.data}`;
         return colorsResponse.data;
       })
@@ -152,8 +164,9 @@ export default class ResultsPage extends Vue {
         this.isLoading = false;
       })
       .catch(err => {
+        console.log(err)
         this.isLoading = false;
-        this.error = err;
+        this.error = `Cannot reach ${this.url}!`;
       });
   }
 }

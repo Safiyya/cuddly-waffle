@@ -3,8 +3,8 @@
   <div
     class="swatch-group flex flex-col bg-white"
     v-if="colors.length>0"
-    @mouseover="toggleDetails()" 
-    @mouseout="toggleDetails()"
+    @mouseover="toggleDetails(true)" 
+    @mouseout="toggleDetails(false)"
   >
     <div class="flex items-baseline">
       <h2 class="">{{label}}</h2>
@@ -42,8 +42,8 @@ export default class SwatchGroup extends Vue {
 
   private isShowDetails:boolean=false;
 
-  private toggleDetails(){
-    this.isShowDetails = !this.isShowDetails;
+  private toggleDetails(show:boolean){
+    this.isShowDetails = show;
   }
 
 
