@@ -16,7 +16,7 @@
       <span>HEX</span>
     </div>
 
-    <div  class="switch_container">
+    <div class="switch_container">
 
       <label class="switch">
 
@@ -32,7 +32,7 @@
       <span>HSL</span>
     </div>
 
-    <div  class="switch_container">
+    <div class="switch_container">
       <label class="switch">
 
         <input
@@ -52,20 +52,20 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import { ColorDisplayOption } from "../models/color";
+import { ColorDisplayOption } from "../models/color-display-options";
 
 @Component({})
 export default class ColorOptionsSwitches extends Vue {
-  @Prop() value: ColorDisplayOption[];
+  @Prop() public value!: ColorDisplayOption[];
 
   private localOptions: ColorDisplayOption[] = [];
 
-  mounted() {
+  public mounted() {
     this.localOptions = this.value.slice(0);
   }
 
-  onClick(){
-    this.$emit("selectColorOptions", this.localOptions)
+  private onClick() {
+    this.$emit("selectColorOptions", this.localOptions);
   }
 }
 </script>
@@ -75,14 +75,14 @@ export default class ColorOptionsSwitches extends Vue {
 .switch {
   /* width: 60px;
   height: 34px; */
-  @apply relative inline-block w-12 h-6 
+  @apply relative inline-block w-12 h-6;
 }
 
-.switch_container{
+.switch_container {
   @apply flex items-center mx-3;
 }
 
-.switch_container > span{
+.switch_container > span {
   @apply ml-1;
 }
 

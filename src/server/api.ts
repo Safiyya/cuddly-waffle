@@ -11,17 +11,17 @@ server.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
-}); 
-server.use(bodyParser.text({ type: 'text/html', limit: 100000000 }))
+});
+server.use(bodyParser.text({ type: "text/html", limit: 100000000 }))
 
-server.get('/screenshot/:url', function (req: express.Request, res: express.Response) {
-  
+server.get("/screenshot/:url", function (req: express.Request, res: express.Response) {
+
   // let image = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "page.png"));
-  
-  // return res.send(new Buffer(image).toString('base64'))
-  
-  
-  
+
+  // return res.send(new Buffer(image).toString("base64"))
+
+
+
   let url = req.params.url;
   puppeteer
     .launch()
@@ -29,8 +29,8 @@ server.get('/screenshot/:url', function (req: express.Request, res: express.Resp
       return browser.newPage();
     })
     .then(function (page) {
-      return page.goto(url, { waitUntil: 'networkidle0' }).then(function () {
-        return page.screenshot({encoding: "base64", fullPage:true})
+      return page.goto(url, { waitUntil: "networkidle0" }).then(function () {
+        return page.screenshot({ encoding: "base64", fullPage: true })
       });
     })
     .then(function (base64String) {
@@ -40,43 +40,43 @@ server.get('/screenshot/:url', function (req: express.Request, res: express.Resp
       console.error(err)
       res.status(500).send(err);
     });
-    
+
 });
 
-server.get('/parse/:url', function (req: express.Request, res: express.Response) {
-  
+server.get("/parse/:url", function (req: express.Request, res: express.Response) {
+
   // let results = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "colors.json"), "utf-8");
   // res.send(JSON.parse(results).colors);
-  
+
   let url = req.params.url;
-  
+
   puppeteer
     .launch()
-    .then(function (browser) {
+    .then((browser) => {
       return browser.newPage();
     })
-    .then(function (page) {
-      return page.goto(url, { waitUntil: 'networkidle0' }).then(function () {
+    .then((page) => {
+      return page.goto(url, { waitUntil: "networkidle0" }).then(function () {
         return page;
       });
-    }, (reason)=>{
+    }, (reason) => {
       throw reason;
     })
-    .then(function (page) {
-      
+    .then((page) => {
+
       return page.$$eval("*:not(meta):not(html):not(title):not(head):not(link):not(script):not(noscript):not(style)", elements => {
 
         const getElement = (el: HTMLElement): { tag: string, class: string, color: string }[] => {
           let tag = el.tagName;
           let color = getComputedStyle(el).color || "";
-          let backgroundColor = getComputedStyle(el).backgroundColor|| "";
-          let borderTopColor = getComputedStyle(el).borderTopColor|| "";
-          let borderBottomColor = getComputedStyle(el).borderBottomColor|| "";
-          let borderLeftColor = getComputedStyle(el).borderLeftColor|| "";
-          let borderRightColor = getComputedStyle(el).borderRightColor|| "";
-          let stroke = getComputedStyle(el).stroke|| "";
-          let fill = getComputedStyle(el).fill|| "";
-          let classes = Array.from(el.classList.values()).join(' ');
+          let backgroundColor = getComputedStyle(el).backgroundColor || "";
+          let borderTopColor = getComputedStyle(el).borderTopColor || "";
+          let borderBottomColor = getComputedStyle(el).borderBottomColor || "";
+          let borderLeftColor = getComputedStyle(el).borderLeftColor || "";
+          let borderRightColor = getComputedStyle(el).borderRightColor || "";
+          let stroke = getComputedStyle(el).stroke || "";
+          let fill = getComputedStyle(el).fill || "";
+          let classes = Array.from(el.classList.values()).join(" ");
 
           let backgroundImage = getComputedStyle(el).backgroundImage || "";
           let regex = /(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/g;
@@ -91,36 +91,34 @@ server.get('/parse/:url', function (req: express.Request, res: express.Response)
           { tag: tag, class: classes, color: borderRightColor },
           { tag: tag, class: classes, color: stroke },
           { tag: tag, class: classes, color: fill },
-        ...gradients.map(g => {return { tag: tag, class: classes, color: g }})
-      ]
-
-        }
+          ...gradients.map((g: string) => { return { tag: tag, class: classes, color: g }; })
+          ];
+        };
 
         return elements
-          .map(d => getElement(d as HTMLElement))
-          .reduce((pre, cur) => pre.concat(cur), [])
-          .filter(el => el.color !== 'none')
-
-      })
-    }, (reason)=>{
+          .map((d: any) => getElement(d as HTMLElement))
+          .reduce((pre: any[], cur: any) => pre.concat(cur), [])
+          .filter((el: any) => el.color !== "none");
+      });
+    }, (reason) => {
       throw reason;
     })
-    .then(function (result) {
+    .then((result) => {
       // console.log(result)
-      res.send(result)
-    }, (reason)=>{
+      res.send(result);
+    }, (reason) => {
       throw reason;
     })
-    .catch(function (err) {
-      console.error(err)
+    .catch((err) => {
+      console.error(err);
       res.status(500).send(err);
     });
-    
+
 });
 
 
 
-// server.post('/parse/', function (req: express.Request, res: express.Response) {
+// server.post("/parse/", function (req: express.Request, res: express.Response) {
 //   let html = req.body;
 
 //   puppeteer
@@ -146,7 +144,7 @@ server.get('/parse/:url', function (req: express.Request, res: express.Response)
 //           let borderRightColor = getComputedStyle(el).borderRightColor;
 //           let stroke = getComputedStyle(el).stroke;
 //           let fill = getComputedStyle(el).fill;
-//           let classes = Array.from(el.classList.values()).join(' ');
+//           let classes = Array.from(el.classList.values()).join(" ");
 
 //           return [{ tag: tag, class: classes, color: color },
 //           { tag: tag, class: classes, color: backgroundColor },
@@ -179,6 +177,6 @@ server.get('/parse/:url', function (req: express.Request, res: express.Response)
 
 
 
-server.listen(3000, function () {
-  console.log('Listening on port 3000!');
+server.listen(3000, () => {
+  console.log("Listening on port 3000!");
 });

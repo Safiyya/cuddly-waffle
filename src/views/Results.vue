@@ -4,7 +4,7 @@
     <div class="w-2/5 h-full ml-12 mr-12 flex flex-col">
       <navigation></navigation>
 
-    <form class="flex w-full mt-16">
+      <form class="flex w-full mt-16">
         <div class="flex w-full ">
           <input
             class="bg-grey-light appearance-none border-2 border-grey-light rounded-l-full w-full py-2 px-4 text-grey-darker leading-tight focus:outline-none focus:bg-white focus:border-blue-dark"
@@ -59,7 +59,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import { ColorDisplayOption, Color } from "../models/color";
+import Color from "../models/color";
+import {ColorDisplayOption} from "../models/color-display-options";
 import axios from "axios";
 import { colorConverter } from "../services/color-converter";
 import Navigation from "../components/Navigation.vue";
@@ -70,9 +71,9 @@ import ColorOptionsSwitches from "../components/ColorOptionsSwitches.vue";
 
 @Component({
   components: {
-    navigation: Navigation,
-    signature: Signature,
-    preview: Preview,
+    "navigation": Navigation,
+    "signature": Signature,
+    "preview": Preview,
     "swatch-results": SwatchResults,
     "color-options-switches": ColorOptionsSwitches
   }
@@ -93,14 +94,12 @@ export default class ResultsPage extends Vue {
       ...arr
         .reduce((map: any, item: any) => {
           const key = cb(item);
-
           map.has(key) || map.set(key, item);
-
           return map;
         }, new Map())
         .values()
     ];
-  };
+  }
 
   private resetPreview() {
     this.screenshot = "";
@@ -112,7 +111,6 @@ export default class ResultsPage extends Vue {
     options.forEach((o, i) => {
       this.$set(this.checkedColorDisplays, i, options[i]);
     });
-    console.log("onSelectColorOptions", options, this.checkedColorDisplays);
   }
 
   private proofUrl(url: string) {
@@ -128,7 +126,7 @@ export default class ResultsPage extends Vue {
     this.isLoading = true;
     this.colors = [];
     this.screenshot = "";
-    let start: number = Date.now();
+    const start: number = Date.now();
 
     this.url = this.proofUrl(this.url);
 
@@ -150,16 +148,18 @@ export default class ResultsPage extends Vue {
           {}
         );
       })
-      .then(result => {
+      .then((result: any) => {
         this.colors = this.uniqBy(
-          [...new Set(Object.keys(result))].map(c => colorConverter.convert(c)),
+          [...new Set(Object.keys(result))].map((c: string) =>
+            colorConverter.convert(c)
+          ),
           (c: Color) => c.hex.raw
         );
       })
       .then(() => {
         this.isLoading = false;
       })
-      .catch(err => {
+      .catch((err: any) => {
         this.isLoading = false;
         this.error = `Cannot reach ${this.url}!`;
       });

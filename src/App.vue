@@ -18,12 +18,11 @@ import Navigation from "@/components/Navigation.vue";
 
 @Component({
   components: {
-    "navigation": Navigation
+    navigation: Navigation
   }
 })
 export default class AppVue extends Vue {}
 </script>
-
 
 <style lang="scss">
 </style>

@@ -6,6 +6,7 @@
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
+    "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -15,7 +16,7 @@
       "webpack-env",
       "jest"
     ],
-    "typeRoots" : ["./typings"],
+    "typeRoots" : ["./typings", "./node_modules/@types"],
     "paths": {
       "@/*": [
         "src/*"
@@ -36,6 +37,6 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules", "./typings"
   ]
 }

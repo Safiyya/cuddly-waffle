@@ -1,24 +1,8 @@
-export class RGB {
-    raw: string;
-    values: [number, number, number]
-}
+import RGB from "./rgb";
+import HSL from "./hsl";
+import HEX from "./hex";
 
-export class HSL {
-    raw: string;
-    values: [number, number, number]
-}
-
-export class HEX {
-    raw: string;
-}
-
-export enum ColorDisplayOption {
-    HEX = "HEX",
-    HSL = "HSL",
-    RGB = "RGB"
-}
-
-export class Color {
+export default class Color {
     public rgb: RGB;
     public hsl: HSL;
     public hex: HEX;
@@ -27,14 +11,16 @@ export class Color {
         this.rgb = new RGB();
         this.hsl = new HSL();
         this.hex = new HEX();
-
     }
 
     /**
-   * HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-   */
+     * HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+     */
     public getPerceivedBrightness(): number {
-        let r: number, g: number, b: number, hsp: number;
+        let r: number;
+        let g: number;
+        let b: number;
+        let hsp: number;
 
         r = this.rgb.values[0];
         g = this.rgb.values[1];
@@ -44,6 +30,4 @@ export class Color {
 
         return hsp;
     }
-
-
 }

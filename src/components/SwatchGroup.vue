@@ -3,12 +3,15 @@
   <div
     class="swatch-group flex flex-col bg-white"
     v-if="colors.length>0"
-    @mouseover="toggleDetails(true)" 
+    @mouseover="toggleDetails(true)"
     @mouseout="toggleDetails(false)"
   >
     <div class="flex items-baseline">
       <h2 class="">{{label}}</h2>
-      <span :class="{'show':isShowDetails}" class="description mx-2 text-grey text-sm">{{description}}</span>
+      <span
+        :class="{'show':isShowDetails}"
+        class="description mx-2 text-grey text-sm"
+      >{{description}}</span>
     </div>
     <div class="flex flex-wrap">
       <swatch
@@ -26,7 +29,8 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import { Color, ColorDisplayOption } from "../models/color";
+import Color from "../models/color";
+import { ColorDisplayOption } from "../models/color-display-options";
 import Swatch from "./Swatch.vue";
 
 @Component({
@@ -35,18 +39,16 @@ import Swatch from "./Swatch.vue";
   }
 })
 export default class SwatchGroup extends Vue {
-  @Prop() colors: Color[];
-  @Prop() description: string;
-  @Prop() displayOptions: ColorDisplayOption[];
-  @Prop() label: string;
+  @Prop() public colors!: Color[];
+  @Prop() public description!: string;
+  @Prop() public displayOptions!: ColorDisplayOption[];
+  @Prop() public label!: string;
 
-  private isShowDetails:boolean=false;
+  private isShowDetails: boolean = false;
 
-  private toggleDetails(show:boolean){
+  private toggleDetails(show: boolean) {
     this.isShowDetails = show;
   }
-
-
 }
 </script>
 
@@ -55,13 +57,13 @@ export default class SwatchGroup extends Vue {
   border-color: #e8ecef;
 }
 
-.description{
-  opacity:0;
+.description {
+  opacity: 0;
   transition: all 400ms;
 }
 
-.description.show{
-  opacity:1;
+.description.show {
+  opacity: 1;
   transition: all 400ms;
 }
 </style>

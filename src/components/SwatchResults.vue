@@ -16,7 +16,8 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import { Color, ColorDisplayOption } from "../models/color";
+import Color from "../models/color";
+import { ColorDisplayOption } from "../models/color-display-options";
 import SwatchGroup from "./SwatchGroup.vue";
 
 @Component({
@@ -25,33 +26,37 @@ import SwatchGroup from "./SwatchGroup.vue";
   }
 })
 export default class SwatchResults extends Vue {
-  @Prop() colors: Color[];
-  @Prop() displayOptions: ColorDisplayOption[];
+  @Prop({ required: true }) public colors!: Color[];
+  @Prop({ required: true }) public displayOptions!: ColorDisplayOption[];
 
-  public get colorGroups() {
+  public get colorGroups(): any {
     return this.colors
-      .map(c => {
+      .map((c:Color) => {
         return this.matchColor(c);
       })
-      .sort((a, b) => a.order - b.order)
+      .sort((a: any, b: any) => a.order - b.order)
       .reduce(
-        (r, v, i, a, k = v.label) => ((r[k] || (r[k] = [])).push(v), r),
+        (r, v, i, a, k = (v as any).label) => (
+          ((r as any)[k] || ((r as any)[k] = [])).push(v), r
+        ),
         {}
       );
   }
 
-  getGroup(key: any): Color[] {
-    console.log(this.colorGroups);
+  private getGroup(key: any): Color[] {
     return this.colorGroups[key]
-      .map(i => i.color)
-      .sort((a: Color, b: Color) => b.getPerceivedBrightness() - a.getPerceivedBrightness());
+      .map((i: any) => i.color)
+      .sort(
+        (a: Color, b: Color) =>
+          b.getPerceivedBrightness() - a.getPerceivedBrightness()
+      );
   }
 
-  getGroupDescription(key: any): string {
-    return this.colorGroups[key].map(i => i.description)[0];
+  private getGroupDescription(key: any): string {
+    return this.colorGroups[key].map((i: any) => i.description)[0];
   }
 
-  matchColor(c: Color) {
+  private matchColor(c: Color) {
     if (this.isGrey(c)) {
       return {
         label: "Grey",
@@ -106,38 +111,39 @@ export default class SwatchResults extends Vue {
     }
   }
 
-  isGrey(c: Color) {
+  private isGrey(c: Color) {
     return c.hsl.values[1] < 20;
   }
 
-  isHueBetween(c: Color, min: number, max: number) {
+  private isHueBetween(c: Color, min: number, max: number) {
     return c.hsl.values[0] > min && max >= c.hsl.values[0];
   }
 
-  isRed(c: Color) {
+  private isRed(c: Color) {
     return !this.isGrey(c) && this.isHueBetween(c, 0, 20);
   }
 
-  isOrange(c: Color) {
+  private isOrange(c: Color) {
     return !this.isGrey(c) && this.isHueBetween(c, 20, 50);
   }
 
-  isYellow(c: Color) {
+  private isYellow(c: Color) {
     return !this.isGrey(c) && this.isHueBetween(c, 50, 70);
   }
-  isGreen(c: Color) {
+
+  private isGreen(c: Color) {
     return !this.isGrey(c) && this.isHueBetween(c, 70, 170);
   }
 
-  isBlue(c: Color) {
+  private isBlue(c: Color) {
     return !this.isGrey(c) && this.isHueBetween(c, 170, 260);
   }
 
-  isPurple(c: Color) {
+  private isPurple(c: Color) {
     return !this.isGrey(c) && this.isHueBetween(c, 260, 310);
   }
 
-  isPink(c: Color) {
+  private isPink(c: Color) {
     return !this.isGrey(c) && this.isHueBetween(c, 310, 360);
   }
 }
@@ -147,6 +153,7 @@ export default class SwatchResults extends Vue {
 .swatch-group {
   @apply my-4 pl-12 rounded-l;
 }
+
 .swatch-group:first-child {
   @apply mt-0 rounded-bl rounded-tl-none;
 }

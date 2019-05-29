@@ -46,20 +46,19 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Provide, Watch } from "vue-property-decorator";
-import { Color, ColorDisplayOption } from "../models/color";
+import Color from "../models/color";
+import { ColorDisplayOption } from "../models/color-display-options";
 
 @Component({})
 export default class Swatch extends Vue {
-  @Prop(Color) color: Color;
-  @Prop() displayOptions: ColorDisplayOption[];
+  @Prop(Color) public color!: Color;
+  @Prop() public displayOptions!: ColorDisplayOption[];
 
   private isCopied: boolean = false;
 
-  
-
   private isHEXDisplayed() {
     return this.displayOptions.find(
-      o =>
+      (o: ColorDisplayOption) =>
         o.toString().toLowerCase() ===
         ColorDisplayOption.HEX.toString().toLowerCase()
     );
@@ -67,7 +66,7 @@ export default class Swatch extends Vue {
 
   private isHSLDisplayed() {
     return this.displayOptions.find(
-      o =>
+      (o: ColorDisplayOption) =>
         o.toString().toLowerCase() ===
         ColorDisplayOption.HSL.toString().toLowerCase()
     );
@@ -75,7 +74,7 @@ export default class Swatch extends Vue {
 
   private isRGBDisplayed() {
     return this.displayOptions.find(
-      o =>
+      (o: ColorDisplayOption) =>
         o.toString().toLowerCase() ===
         ColorDisplayOption.RGB.toString().toLowerCase()
     );
@@ -90,31 +89,31 @@ export default class Swatch extends Vue {
   }
 
   private getCopiedText() {
-    let hex = this.isHEXDisplayed() ? this.color.hex.raw : null;
-    let hsl = this.isHSLDisplayed() ? this.color.hsl.raw : null;
-    let rgb = this.isRGBDisplayed() ? this.color.rgb.raw : null;
-    return [hex, hsl, rgb].filter(i => i).join("\r\n");
+    const hex = this.isHEXDisplayed() ? this.color.hex.raw : null;
+    const hsl = this.isHSLDisplayed() ? this.color.hsl.raw : null;
+    const rgb = this.isRGBDisplayed() ? this.color.rgb.raw : null;
+    return [hex, hsl, rgb].filter((i: string|null) => i).join("\r\n");
   }
 
   private copy() {
     this.isCopied = false;
     const el = document.createElement("textarea");
-    el.value = this.getCopiedText()
+    el.value = this.getCopiedText();
     el.setAttribute("readonly", ""); // Make it readonly to be tamper-proof
     el.style.position = "absolute";
     el.style.left = "-9999px"; // Move outside the screen to make it invisible
     document.body.appendChild(el); // Append the <textarea> element to the HTML document
     const selected =
-      document.getSelection().rangeCount > 0 // Check if there is any content selected previously
-        ? document.getSelection().getRangeAt(0) // Store selection if found
+      (document.getSelection() as Selection).rangeCount > 0 // Check if there is any content selected previously
+        ? (document.getSelection() as Selection).getRangeAt(0) // Store selection if found
         : false; // Mark as false to know no selection existed before
     el.select(); // Select the <textarea> content
     document.execCommand("copy"); // Copy - only works as a result of a user action (e.g. click events)
     document.body.removeChild(el); // Remove the <textarea> element
     if (selected) {
       // If a selection existed before copying
-      document.getSelection().removeAllRanges(); // Unselect everything on the HTML document
-      document.getSelection().addRange(selected); // Restore the original selection
+      (document.getSelection() as Selection).removeAllRanges(); // Unselect everything on the HTML document
+      (document.getSelection() as Selection).addRange(selected); // Restore the original selection
     }
     this.isCopied = true;
   }
@@ -123,7 +122,7 @@ export default class Swatch extends Vue {
 
 <style>
 .is-light-swatch {
-  border-color: hsl(0 , 0%, 0%, 0.1) !important;
+  border-color: hsl(0, 0%, 0%, 0.1) !important;
 }
 
 /* .is-light-swatch:hover > .copy {
@@ -132,8 +131,8 @@ export default class Swatch extends Vue {
 
 .swatch-square > .copy {
   opacity: 0;
-   @apply text-grey-dark fill-current !important;
   transition: all 400ms;
+  /* @apply text-grey-dark fill-current; !important; */
 }
 
 .swatch-square:hover {
