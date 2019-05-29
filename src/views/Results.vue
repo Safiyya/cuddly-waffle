@@ -80,6 +80,7 @@ import ColorOptionsSwitches from "../components/ColorOptionsSwitches.vue";
 })
 export default class ResultsPage extends Vue {
   private url: string = "https://vuejs.org/";
+  private BASEURL:string = `${window.location.protocol}//${window.location.hostname}:3000/api`
   private isLoading: boolean = false;
   private screenshot: string = "";
   private error: string = "";
@@ -131,9 +132,9 @@ export default class ResultsPage extends Vue {
     this.url = this.proofUrl(this.url);
 
     Promise.all([
-      axios.get(`http://localhost:3000/parse/${encodeURIComponent(this.url)}`),
+      axios.get(`${this.BASEURL}/parse/${encodeURIComponent(this.url)}`),
       axios.get(
-        `http://localhost:3000/screenshot/${encodeURIComponent(this.url)}`
+        `${this.BASEURL}/screenshot/${encodeURIComponent(this.url)}`
       )
     ])
       .then(([colorsResponse, screenshotResponse]) => {

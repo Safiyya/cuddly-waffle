@@ -1,10 +1,33 @@
 {
-    "name":"cuddly-waffle",
-    "builds": [{ "src": "package.json", "use": "@now/static-build" }],
-    "routes": [
-      { "src": "^/js/(.*)", "dest": "/js/$1" },
-      { "src": "^/css/(.*)", "dest": "/css/$1" },
-      { "src": "^/img/(.*)", "dest": "/img/$1" },
-      { "src": ".*", "dest": "/index.html" }
-    ]
+  "name": "cuddly-waffle-v2",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/static-build"
+    },
+    {
+      "src":"dist/api.js",
+      "use":"@now/node-server"
+    }
+  ],
+  "routes": [
+    
+    { "src": "^/api/(.*)", "dest": "dist/api.js" },
+    {
+      "src": "^/js/(.*)",
+      "dest": "/js/$1"
+    },
+    {
+      "src": "^/css/(.*)",
+      "dest": "/css/$1"
+    },
+    {
+      "src": "^/img/(.*)",
+      "dest": "/img/$1"
+    },
+    {
+      "src": ".*",
+      "dest": "/index.html"
+    }
+  ]
 }

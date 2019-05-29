@@ -2,19 +2,29 @@
 import express from "express";
 import puppeteer from "puppeteer";
 import bodyParser from "body-parser";
+import timeout from "connect-timeout";
 import path from "path";
 import fs from "fs";
 
-const server: express.Application = express();
+const apiServer: express.Application = express();
 
-server.use(function (req, res, next) {
+
+
+apiServer.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-server.use(bodyParser.text({ type: "text/html", limit: 100000000 }))
+apiServer.use(bodyParser.text({ type: "text/html", limit: 100000000 }))
+apiServer.use(timeout('120s'));
+apiServer.use(haltOnTimedout);
 
-server.get("/screenshot/:url", function (req: express.Request, res: express.Response) {
+function haltOnTimedout(req: any, res: express.Response, next:express.NextFunction){
+   if (!req.timeout) next();
+}
+
+
+apiServer.get("/api/screenshot/:url", function (req: express.Request, res: express.Response) {
 
   // let image = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "page.png"));
 
@@ -25,25 +35,25 @@ server.get("/screenshot/:url", function (req: express.Request, res: express.Resp
   let url = req.params.url;
   puppeteer
     .launch()
-    .then(function (browser) {
+    .then((browser) => {
       return browser.newPage();
     })
-    .then(function (page) {
+    .then((page) => {
       return page.goto(url, { waitUntil: "networkidle0" }).then(function () {
         return page.screenshot({ encoding: "base64", fullPage: true })
       });
     })
-    .then(function (base64String) {
+    .then((base64String) => {
       res.send(base64String);
     })
-    .catch(function (err) {
+    .catch((err) => {
       console.error(err)
       res.status(500).send(err);
     });
 
 });
 
-server.get("/parse/:url", function (req: express.Request, res: express.Response) {
+apiServer.get("/api/parse/:url", function (req: express.Request, res: express.Response) {
 
   // let results = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "colors.json"), "utf-8");
   // res.send(JSON.parse(results).colors);
@@ -177,6 +187,6 @@ server.get("/parse/:url", function (req: express.Request, res: express.Response)
 
 
 
-server.listen(3000, () => {
+apiServer.listen(3000, () => {
   console.log("Listening on port 3000!");
 });
