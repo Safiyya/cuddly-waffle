@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "./node_modules/concurrently/bin/concurrently.js --kill-others \"npm run serve:server\" \"npm run serve:client\"",
+    "start": "./node_modules/.bin/concurrently --kill-others \"npm run serve:server\" \"npm run serve:client\"",
     "serve:server": "ts-node --project ./server/tsconfig.json ./server/api.ts",
     "serve:client": "vue-cli-service serve",
     "build": "vue-cli-service build && tsc --project  ./server/ --outDir dist",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
     "now-build": "vue-cli-service build && tsc --project  ./server/ --outDir dist",
-    "heroku-postbuild": "./node_modules/concurrently/bin/concurrently.js --kill-others \"npm run serve:server\" \"npm run serve:client\""
+    "heroku-postbuild": "./node_modules/.bin/concurrently --kill-others \"npm run serve:server\" \"npm run serve:client\""
   },
   "dependencies": {
     "axios": "^0.18.0",
