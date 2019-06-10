@@ -9,7 +9,8 @@
     "build": "vue-cli-service build && tsc --project  ./server/ --outDir dist",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
-    "now-build": "vue-cli-service build && tsc --project  ./server/ --outDir dist"
+    "now-build": "vue-cli-service build && tsc --project  ./server/ --outDir dist",
+    "heroku-postbuild": "vue-cli-service build && tsc --project  ./server/ --outDir dist"
   },
   "dependencies": {
     "axios": "^0.18.0",
