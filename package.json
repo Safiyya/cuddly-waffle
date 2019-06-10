@@ -61,6 +61,6 @@
     "sass-loader": "^7.1.0",
     "style-resources-loader": "^1.2.1",
     "tailwindcss": "^0.7.4",
-    "ts-jest": "^23.0.0",
+    "ts-jest": "^23.0.0"
   }
 }
