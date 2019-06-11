@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "./node_modules/.bin/concurrently --kill-others \"node ./dist/api.js\" \"npm run serve:client\"",
+    "start": "./node_modules/.bin/concurrently --kill-others \"node api.js\" \"npm run serve:client\"",
     "start:dev": "./node_modules/.bin/concurrently --kill-others \"npm run serve:server\" \"npm run serve:client\"",
     "serve:server": "ts-node --project ./server/tsconfig.json ./server/api.ts",
     "serve:client": "vue-cli-service serve",
