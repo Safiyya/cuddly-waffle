@@ -35,7 +35,7 @@ apiServer.get("/api/screenshot/:url", function (req: express.Request, res: expre
   let url = req.params.url;
   puppeteer
     .launch({
-      args: ['--no-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
     .then((browser) => {
       return browser.newPage();
@@ -64,7 +64,7 @@ apiServer.get("/api/parse/:url", function (req: express.Request, res: express.Re
 
   puppeteer
     .launch({
-      args: ['--no-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
     .then((browser) => {
       return browser.newPage();
