@@ -9,7 +9,8 @@
     "build": "vue-cli-service build && tsc --project  ./server/ --outDir dist",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
-    "now-build": "vue-cli-service build && tsc --project  ./server/ --outDir dist"
+    "now-build": "vue-cli-service build && tsc --project  ./server/ --outDir dist",
+    "heroku-postbuild": "./node_modules/.bin/concurrently --kill-others \"node ./dist/api.js\" \"npm run serve:client\""
   },
   "dependencies": {
     "axios": "^0.18.0",
