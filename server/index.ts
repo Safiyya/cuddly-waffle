@@ -43,4 +43,4 @@ app.listen(3001, () => {
   console.log("Listening on port 3001!");
 });
 
-export const handler = () => serverless(app);
+export const handler = serverless(app);
