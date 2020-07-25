@@ -47,4 +47,4 @@ app.listen(3000, () => {
   console.log("Listening on port 3000!");
 });
 
-exports.handler = serverless(app);
+module.exports.handler = serverless(app);
