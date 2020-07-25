@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "start": "npx concurrently --kill-others \"npm run serve:server\" \"npm run serve:client\"",
-    "serve:server": "ts-node --project ./server/tsconfig.json ./server/api.ts",
+    "start:dev": "npx concurrently --kill-others \"npm run serve:server:dev\" \"npm run serve:client:dev\"",
+    "serve:server": "node ./dist/api.js",
     "serve:client": "vue-cli-service serve",
+    "serve:server:dev": "ts-node --project ./server/tsconfig.json ./server/api.ts --outDir dist/server",
+    "serve:client:dev": "vue-cli-service serve",
     "build": "vue-cli-service build && tsc --project  ./server/ --outDir dist",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit",
-    "heroku-postbuild": "vue-cli-service build && tsc --project  ./server/ --outDir dist"
+    "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
     "axios": "^0.18.0",
