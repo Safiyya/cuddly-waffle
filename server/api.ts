@@ -1,48 +1,15 @@
 import express from "express";
 import puppeteer from "puppeteer";
-import bodyParser from "body-parser";
-import timeout from "connect-timeout";
-import path from "path";
-import fs from "fs";
-
-const apiServer: express.Application = express();
-
-apiServer.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-apiServer.use(bodyParser.text({ type: "text/html", limit: 100000000 }));
-apiServer.use(timeout("120s"));
-apiServer.use(haltOnTimedout);
-
-function haltOnTimedout(
-  req: any,
-  res: express.Response,
-  next: express.NextFunction
-) {
-  if (!req.timeout) next();
-}
-
-apiServer.get("/ping", function(req: express.Request, res: express.Response) {
-  res.status(200).send("pong");
-});
 
 /**
  * Get a screenshot of the required URL in Base64
  */
-apiServer.get("/api/screenshot/:url", function(
-  req: express.Request,
-  res: express.Response
-) {
+export const getScreenshot = (req: express.Request, res: express.Response) => {
   // let image = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "page.png"));
 
   // return res.send(new Buffer(image).toString("base64"))
 
-  let url = req.params.url;
+  const url = req.params.url;
   puppeteer
     .launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -51,9 +18,16 @@ apiServer.get("/api/screenshot/:url", function(
       return browser.newPage();
     })
     .then((page) => {
-      return page.goto(url, { waitUntil: "networkidle0" }).then(function() {
-        return page.screenshot({ encoding: "base64", fullPage: true });
-      });
+      return page
+        .goto(url, {
+          waitUntil: "networkidle0",
+        })
+        .then(() => {
+          return page.screenshot({
+            encoding: "base64",
+            fullPage: true,
+          });
+        });
     })
     .then((base64String) => {
       res.send(base64String);
@@ -62,19 +36,16 @@ apiServer.get("/api/screenshot/:url", function(
       console.error(err);
       res.status(500).send(err);
     });
-});
+};
 
 /**
  * Mine requested URL for color, backgroundColor, border, stroke and fill color codes
  */
-apiServer.get("/api/parse/:url", function(
-  req: express.Request,
-  res: express.Response
-) {
+export const parseUrl = (req: express.Request, res: express.Response) => {
   // let results = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "colors.json"), "utf-8");
   // res.send(JSON.parse(results).colors);
 
-  let url = req.params.url;
+  const url = req.params.url;
 
   puppeteer
     .launch({
@@ -100,38 +71,41 @@ apiServer.get("/api/parse/:url", function(
           (elements) => {
             const getElement = (
               el: HTMLElement
-            ): { tag: string; class: string; color: string }[] => {
-              let tag = el.tagName;
-              let color = getComputedStyle(el).color || "";
-              let backgroundColor = getComputedStyle(el).backgroundColor || "";
-              let borderTopColor = getComputedStyle(el).borderTopColor || "";
-              let borderBottomColor =
+            ): Array<{ tag: string; class: string; color: string }> => {
+              const tag = el.tagName;
+              const color = getComputedStyle(el).color || "";
+              const backgroundColor =
+                getComputedStyle(el).backgroundColor || "";
+              const borderTopColor = getComputedStyle(el).borderTopColor || "";
+              const borderBottomColor =
                 getComputedStyle(el).borderBottomColor || "";
-              let borderLeftColor = getComputedStyle(el).borderLeftColor || "";
-              let borderRightColor =
+              const borderLeftColor =
+                getComputedStyle(el).borderLeftColor || "";
+              const borderRightColor =
                 getComputedStyle(el).borderRightColor || "";
-              let stroke = getComputedStyle(el).stroke || "";
-              let fill = getComputedStyle(el).fill || "";
-              let classes = Array.from(el.classList.values()).join(" ");
+              const stroke = getComputedStyle(el).stroke || "";
+              const fill = getComputedStyle(el).fill || "";
+              const classes = Array.from(el.classList.values()).join(" ");
 
-              let backgroundImage = getComputedStyle(el).backgroundImage || "";
-              let regex = /(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/g;
+              const backgroundImage =
+                getComputedStyle(el).backgroundImage || "";
+              const regex = /(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/g;
 
-              let gradients = (backgroundImage.match(regex) || []).map((m) =>
+              const gradients = (backgroundImage.match(regex) || []).map((m) =>
                 m.toString()
               );
 
               return [
-                { tag: tag, class: classes, color: color },
-                { tag: tag, class: classes, color: backgroundColor },
-                { tag: tag, class: classes, color: borderTopColor },
-                { tag: tag, class: classes, color: borderBottomColor },
-                { tag: tag, class: classes, color: borderLeftColor },
-                { tag: tag, class: classes, color: borderRightColor },
-                { tag: tag, class: classes, color: stroke },
-                { tag: tag, class: classes, color: fill },
+                { tag, class: classes, color },
+                { tag, class: classes, color: backgroundColor },
+                { tag, class: classes, color: borderTopColor },
+                { tag, class: classes, color: borderBottomColor },
+                { tag, class: classes, color: borderLeftColor },
+                { tag, class: classes, color: borderRightColor },
+                { tag, class: classes, color: stroke },
+                { tag, class: classes, color: fill },
                 ...gradients.map((g: string) => {
-                  return { tag: tag, class: classes, color: g };
+                  return { tag, class: classes, color: g };
                 }),
               ];
             };
@@ -160,65 +134,4 @@ apiServer.get("/api/parse/:url", function(
       console.error(err);
       res.status(500).send(err);
     });
-});
-
-// server.post("/parse/", function (req: express.Request, res: express.Response) {
-//   let html = req.body;
-
-//   puppeteer
-//     .launch()
-//     .then(function (browser) {
-//       return browser.newPage();
-//     })
-//     .then(function (page) {
-//       return page.setContent(html).then(() => { return page });
-//     })
-//     .then(function (page) {
-
-//       return page.$$eval("*", elements => {
-
-//         const getElement = (el: HTMLElement): { tag: string, class: string, color: string }[] => {
-//           let tag = el.tagName;
-//           let color = getComputedStyle(el).color;
-//           let backgroundColor = getComputedStyle(el).backgroundColor;
-//           let background = getComputedStyle(el).background;
-//           let borderTopColor = getComputedStyle(el).borderTopColor;
-//           let borderBottomColor = getComputedStyle(el).borderBottomColor;
-//           let borderLeftColor = getComputedStyle(el).borderLeftColor;
-//           let borderRightColor = getComputedStyle(el).borderRightColor;
-//           let stroke = getComputedStyle(el).stroke;
-//           let fill = getComputedStyle(el).fill;
-//           let classes = Array.from(el.classList.values()).join(" ");
-
-//           return [{ tag: tag, class: classes, color: color },
-//           { tag: tag, class: classes, color: backgroundColor },
-//           { tag: tag, class: classes, color: background },
-//           { tag: tag, class: classes, color: borderTopColor },
-//           { tag: tag, class: classes, color: borderBottomColor },
-//           { tag: tag, class: classes, color: borderLeftColor },
-//           { tag: tag, class: classes, color: borderRightColor },
-//           { tag: tag, class: classes, color: stroke },
-//           { tag: tag, class: classes, color: fill }]
-
-//         }
-
-//         let regex = /(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/g;
-
-//         return elements
-//           .map(d => getElement(d as HTMLElement))
-//           .reduce((pre, cur) => pre.concat(cur), [])
-//           .filter(el => regex.test(el.color))
-
-//       })
-//     })
-//     .then(function (result) {
-//       res.send(result)
-//     })
-//     .catch(function (err) {
-//       res.status(500).send(err);
-//     });
-// });
-
-apiServer.listen(3000, () => {
-  console.log("Listening on port 3000!");
-});
+};
