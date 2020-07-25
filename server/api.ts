@@ -70,6 +70,43 @@ export const parseUrl = async (req: Request, res: Response) => {
     const colors = await page.$$eval(
       "*:not(meta):not(html):not(title):not(head):not(link):not(script):not(noscript):not(style)",
       (elements) => {
+        const getElement = (
+          el: HTMLElement
+        ): Array<{ tag: string; class: string; color: string }> => {
+          const tag = el.tagName;
+          const color = getComputedStyle(el).color || "";
+          const backgroundColor = getComputedStyle(el).backgroundColor || "";
+          const borderTopColor = getComputedStyle(el).borderTopColor || "";
+          const borderBottomColor =
+            getComputedStyle(el).borderBottomColor || "";
+          const borderLeftColor = getComputedStyle(el).borderLeftColor || "";
+          const borderRightColor = getComputedStyle(el).borderRightColor || "";
+          const stroke = getComputedStyle(el).stroke || "";
+          const fill = getComputedStyle(el).fill || "";
+          const classes = Array.from(el.classList.values()).join(" ");
+
+          const backgroundImage = getComputedStyle(el).backgroundImage || "";
+          const regex = /(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/g;
+
+          const gradients = (backgroundImage.match(regex) || []).map((m) =>
+            m.toString()
+          );
+
+          return [
+            { tag, class: classes, color },
+            { tag, class: classes, color: backgroundColor },
+            { tag, class: classes, color: borderTopColor },
+            { tag, class: classes, color: borderBottomColor },
+            { tag, class: classes, color: borderLeftColor },
+            { tag, class: classes, color: borderRightColor },
+            { tag, class: classes, color: stroke },
+            { tag, class: classes, color: fill },
+            ...gradients.map((g: string) => {
+              return { tag, class: classes, color: g };
+            }),
+          ];
+        };
+
         return elements
           .map((d: any) => getElement(d as HTMLElement))
           .reduce((pre: any[], cur: any) => pre.concat(cur), [])
@@ -81,40 +118,4 @@ export const parseUrl = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).send(error);
   }
-};
-
-const getElement = (
-  el: HTMLElement
-): Array<{ tag: string; class: string; color: string }> => {
-  const tag = el.tagName;
-  const color = getComputedStyle(el).color || "";
-  const backgroundColor = getComputedStyle(el).backgroundColor || "";
-  const borderTopColor = getComputedStyle(el).borderTopColor || "";
-  const borderBottomColor = getComputedStyle(el).borderBottomColor || "";
-  const borderLeftColor = getComputedStyle(el).borderLeftColor || "";
-  const borderRightColor = getComputedStyle(el).borderRightColor || "";
-  const stroke = getComputedStyle(el).stroke || "";
-  const fill = getComputedStyle(el).fill || "";
-  const classes = Array.from(el.classList.values()).join(" ");
-
-  const backgroundImage = getComputedStyle(el).backgroundImage || "";
-  const regex = /(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/g;
-
-  const gradients = (backgroundImage.match(regex) || []).map((m) =>
-    m.toString()
-  );
-
-  return [
-    { tag, class: classes, color },
-    { tag, class: classes, color: backgroundColor },
-    { tag, class: classes, color: borderTopColor },
-    { tag, class: classes, color: borderBottomColor },
-    { tag, class: classes, color: borderLeftColor },
-    { tag, class: classes, color: borderRightColor },
-    { tag, class: classes, color: stroke },
-    { tag, class: classes, color: fill },
-    ...gradients.map((g: string) => {
-      return { tag, class: classes, color: g };
-    }),
-  ];
 };

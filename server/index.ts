@@ -28,7 +28,7 @@ function haltOnTimedout(
   }
 }
 
-const routes: Router = Router({ strict: true });
+const router: Router = Router({ strict: true });
 
 app.get("/", (req: express.Request, res: express.Response) => {
   res.status(200).send("ROOT");
@@ -38,13 +38,13 @@ app.get("/ping", (req: express.Request, res: express.Response) => {
   res.status(200).send("pong");
 });
 
-routes.get("/screenshot/:url", getScreenshot);
-routes.get("/parse/:url", parseUrl);
+router.get("/screenshot/:url", getScreenshot);
+router.get("/parse/:url", parseUrl);
 
-app.use(routes);
+app.use("/", router);
 
-app.listen(3001, () => {
-  console.log("Listening on port 3001!");
+app.listen(3000, () => {
+  console.log("Listening on port 3000!");
 });
 
 exports.handler = serverless(app);
