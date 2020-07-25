@@ -30,6 +30,10 @@ function haltOnTimedout(
 
 const routes: Router = Router({ strict: true });
 
+app.get("/", (req: express.Request, res: express.Response) => {
+  res.status(200).send("ROOT");
+});
+
 app.get("/ping", (req: express.Request, res: express.Response) => {
   res.status(200).send("pong");
 });
