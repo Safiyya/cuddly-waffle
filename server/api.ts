@@ -24,6 +24,9 @@ function haltOnTimedout(req: any, res: express.Response, next:express.NextFuncti
 }
 
 
+/**
+ * Get a screenshot of the required URL in Base64
+ */
 apiServer.get("/api/screenshot/:url", function (req: express.Request, res: express.Response) {
 
   // let image = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "page.png"));
@@ -55,6 +58,9 @@ apiServer.get("/api/screenshot/:url", function (req: express.Request, res: expre
 
 });
 
+/**
+ * Mine requested URL for color, backgroundColor, border, stroke and fill color codes
+ */
 apiServer.get("/api/parse/:url", function (req: express.Request, res: express.Response) {
 
   // let results = fs.readFileSync(path.resolve(__dirname,"..", "mocks", "colors.json"), "utf-8");
