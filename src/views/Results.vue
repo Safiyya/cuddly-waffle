@@ -16,7 +16,9 @@
         <button
           @click="get()"
           class="cursor-pointer whitespace-no-wrap bg-blue-dark text-white text-sm rounded-r-full uppercase p-3 border-0"
-        >Get colors</button>
+        >
+          Get colors
+        </button>
       </form>
       <span class="text-sm text-red">{{ error }}</span>
       <div class="flex items-center p-3 pl-0">
@@ -29,7 +31,11 @@
       </div>
 
       <div class="my-12 flex-grow">
-        <preview :url="url" :screenshot="screenshot" :is-loading="isLoading"></preview>
+        <preview
+          :url="url"
+          :screenshot="screenshot"
+          :is-loading="isLoading"
+        ></preview>
       </div>
 
       <div></div>
@@ -37,7 +43,10 @@
     </div>
     <div class="w-3/5 max-h-full overflow-y-auto bg-white">
       <div class="w-full bg-grey-lightest flex flex-col">
-        <swatch-results :colors="colors" :display-options="checkedColorDisplays"></swatch-results>
+        <swatch-results
+          :colors="colors"
+          :display-options="checkedColorDisplays"
+        ></swatch-results>
       </div>
     </div>
   </div>
@@ -66,7 +75,7 @@ import ColorOptionsSwitches from "../components/ColorOptionsSwitches.vue";
 })
 export default class ResultsPage extends Vue {
   private url: string = "https://vuejs.org/";
-  private BASEURL: string = `${window.location.protocol}//${window.location.hostname}:3000`;
+  private BASEURL: string = `${window.location.protocol}//${window.location.hostname}:3020/api`;
   private isLoading: boolean = false;
   private screenshot: string = "";
   private error: string = "";

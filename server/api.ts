@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import chromium = require("chrome-aws-lambda");
+import chromium from "chrome-aws-lambda";
 
 /**
  * Get a screenshot of the required URL in Base64
@@ -16,7 +16,7 @@ export const getScreenshot = async (req: Request, res: Response) => {
       executablePath: await chromium.executablePath,
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      headless: chromium.headless,
+      headless: true,
     });
 
     const page = await browser.newPage();
@@ -53,7 +53,7 @@ export const parseUrl = async (req: Request, res: Response) => {
       executablePath: await chromium.executablePath,
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      headless: chromium.headless,
+      headless: true,
     });
 
     const page = await browser.newPage();

@@ -30,10 +30,6 @@ function haltOnTimedout(
 
 const router: Router = Router({ strict: true });
 
-app.get("/", (req: express.Request, res: express.Response) => {
-  res.status(200).send("ROOT");
-});
-
 app.get("/ping", (req: express.Request, res: express.Response) => {
   res.status(200).send("pong");
 });
@@ -41,10 +37,10 @@ app.get("/ping", (req: express.Request, res: express.Response) => {
 router.get("/screenshot/:url", getScreenshot);
 router.get("/parse/:url", parseUrl);
 
-app.use("/", router);
+app.use("/api", router);
 
 app.listen(3000, () => {
-  console.log("Listening on port 3000!");
+  console.log("Listening on port 3000.");
 });
 
 module.exports.handler = serverless(app);
