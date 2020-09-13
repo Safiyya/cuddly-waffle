@@ -75,7 +75,7 @@ import ColorOptionsSwitches from "../components/ColorOptionsSwitches.vue";
 })
 export default class ResultsPage extends Vue {
   private url: string = "https://vuejs.org/";
-  private BASEURL: string = `${window.location.protocol}//${window.location.hostname}:3020/api`;
+  private BASEURL: string = `${window.location.protocol}//${window.location.hostname}:3000/api`;
   private isLoading: boolean = false;
   private screenshot: string = "";
   private error: string = "";

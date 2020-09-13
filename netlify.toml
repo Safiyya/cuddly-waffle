@@ -16,3 +16,9 @@
 
   # Directory with the serverless Lambda functions to deploy to AWS.
   functions = "./dist/server/"
+
+[dev]
+	functions = "dist/server"
+	functionsPort = 23456
+	targetPort = 9000
+	port = 3030
